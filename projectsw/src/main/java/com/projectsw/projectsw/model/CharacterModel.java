@@ -2,9 +2,13 @@ package com.projectsw.projectsw.model;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "tb_members")
+@NoArgsConstructor
+@AllArgsConstructor
 public class CharacterModel {
 
     @Id
@@ -18,26 +22,6 @@ public class CharacterModel {
     @ManyToOne
     @JoinColumn(name = "mission_id")
     private MissionModel mission;
-
-    public CharacterModel() {
-
-    }
-
-    public CharacterModel(String name, String email, int age, MissionModel mission) {
-        this.name = name;
-        this.email = email;
-        this.age = age;
-        this.mission = mission;
-
-    }
-
-    public MissionModel getMission() {
-        return mission;
-    }
-
-    public void setMission(MissionModel mission) {
-        this.mission = mission;
-    }
 
     public String getName() {
         return name;
@@ -61,5 +45,13 @@ public class CharacterModel {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public MissionModel getMission() {
+        return mission;
+    }
+
+    public void setMission(MissionModel mission) {
+        this.mission = mission;
     }
 }

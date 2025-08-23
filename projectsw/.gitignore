@@ -108,3 +108,9 @@ Thumbs.db
 # Windows Zone.Identifier
 # ======================
 *.Zone.Identifier
+
+# ======================
+# Resources
+# ======================
+*.sh
+*.json
