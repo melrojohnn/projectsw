@@ -49,11 +49,13 @@
 		</dependency>
 
 		<!-- Lombok -->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>1.18.32</version> <!-- Use the latest version available -->
+				<scope>provided</scope>
+			</dependency>
+
 
 		<!-- Spring Boot Test -->
 		<dependency>
