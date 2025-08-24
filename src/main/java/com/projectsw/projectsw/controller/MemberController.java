@@ -10,7 +10,7 @@ public class MemberController {
 
     @GetMapping("/boasvindas")
     public String boasVindas() {
-        return "Boas vindas";
+        return "<html><body style='background-color:white;'><h1>Boas vindas</h1></body></html>";
     }
 
 
