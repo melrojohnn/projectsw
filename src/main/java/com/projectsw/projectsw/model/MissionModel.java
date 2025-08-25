@@ -23,6 +23,7 @@ public class MissionModel {
     private String title;
     private String description;
     private String status;
+    private String rank;
 
     @OneToMany(mappedBy = "mission")
     @JsonManagedReference
