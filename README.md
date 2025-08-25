@@ -1,60 +1,104 @@
-🌌 StarWarsApp
+# 🌌 StarWars Missions API
 
-StarWarsApp is a Java-based console application inspired by the Star Wars universe, designed as a learning project that evolves step-by-step through the main features of the Java ecosystem. The goal is to progress from core Java fundamentals to a fully containerized web application using Spring Boot, Docker, and a modern front-end framework.
+A RESTful API built with Spring Boot to manage characters and missions in the Star Wars universe. This project serves as a practical application of modern Java back-end development, featuring a versioned database, secure configuration, and a clean, scalable architecture.
 
-🎯 Project Goal
+## ✨ Features Implemented
 
-This project serves as a roadmap to master Java and its ecosystem:
+-   **RESTful API:** Exposes endpoints for managing `Missions` and `Characters`.
+-   **Database Integration:** Uses Spring Data JPA to connect to a PostgreSQL database.
+-   **Database Versioning:** Employs **Flyway** to manage database schema changes and seed initial data, ensuring a consistent and reproducible database state.
+-   **Secure Configuration:** Database credentials and other sensitive data are kept out of version control using a `.env` file, loaded on startup.
+-   **Bidirectional Relationship Handling:** Correctly manages JSON serialization for related entities to prevent infinite loops.
+-   **Clean Architecture:** Ready for future expansion with a clear separation of concerns (Controllers, Repositories, and soon, Services and DTOs).
 
-Core Java: Object-oriented programming (OOP), classes, inheritance, encapsulation, polymorphism.
+## 🚀 Technologies Used
 
-Mock Persistence Layer: Simulating databases using Java collections.
+| Layer                | Technology                               |
+| -------------------- | ---------------------------------------- |
+| **Language**         | Java 17                                  |
+| **Framework**        | Spring Boot                              |
+| **Data Persistence** | Spring Data JPA / Hibernate              |
+| **Database**         | PostgreSQL                               |
+| **DB Versioning**    | Flyway                                   |
+| **Dependencies**     | Lombok, dotenv-java                      |
+| **Build Tool**       | Maven                                    |
 
-JDBC + PostgreSQL: Connecting to a real database using Java.
+## 🏁 Getting Started
 
-Spring Boot: REST APIs, JPA, validation, exception handling, and JWT-based authentication.
+### Prerequisites
 
-Docker: Containerizing the back-end and database.
+-   Java 17 (or higher)
+-   Apache Maven
+-   A running PostgreSQL instance
 
-Front-end Integration: Consuming the API from a modern front-end app.
+### How to Run
 
-CI/CD + Cloud Deployment: Automating build and deployment pipelines, pushing the app to the cloud.
+1.  **Clone the repository:**
+    ```sh
+    git clone https://github.com/melrojohnn/projectsw.git
+    cd projectsw
+    ```
 
+2.  **Create the environment file:**
+    Create a file named `.env` in the root of the project and add your PostgreSQL database credentials:
+    ```env
+    DB_URL=jdbc:postgresql://localhost:5432/your_database_name
+    DB_USERNAME=your_username
+    DB_PASSWORD=your_password
+    ```
 
-🧠 Concepts Covered
+3.  **Build the project:**
+    Use the Maven wrapper to build the application. This will also download all necessary dependencies.
+    ```sh
+    ./mvnw clean install
+    ```
 
-✅ OOP: Inheritance, polymorphism, abstraction
+4.  **Run the application:**
+    Once the build is complete, you can start the application.
+    ```sh
+    java -jar target/projectsw-0.0.1-SNAPSHOT.jar
+    ```
+    The application will start on `http://localhost:8181`. Flyway will automatically run the database migrations on the first startup.
 
-✅ Flow control: if, switch, loops
+## API Endpoints
 
-✅ Class design and structure
+The following endpoints are currently available:
 
-✅ Separation of concerns
+| Method | URL                | Description                               |
+| ------ | ------------------ | ----------------------------------------- |
+| `GET`  | `/missions`        | Retrieves a list of all missions.         |
+| `GET`  | `/characters`      | Retrieves a list of all characters.       |
 
-✅ Back-end architecture evolution
+### Sample Response for `/missions`
 
+```json
+[
+  {
+    "id": 1,
+    "title": "Steal Death Star Plans",
+    "description": "Infiltrate the Empire base on Scarif to steal the plans for the Death Star.",
+    "status": "ACTIVE",
+    "members": [
+      {
+        "id": 3,
+        "name": "Jyn Erso",
+        "email": "jyn@rebellion.org",
+        "age": 21,
+        "homeland": "Vallt"
+      }
+    ]
+  }
+]
+```
 
-🖥️ Future Front-end Options
+## 🎯 Future Roadmap
 
+This project serves as a foundation. Future enhancements include:
 
-🔷 Angular?
-
-⚛️ React?
-
-(Optional) Vue.js – Lightweight and easy to integrate.
-
-🚀 Technologies (current and planned)
-
-| Layer      | Technology             |
-| ---------- | ---------------------- |
-| Language   | Java                   |
-| Back-end   | Spring Boot            |
-| Database   | PostgreSQL             |
-| Front-end  | Angular / React        |
-| DevOps     | Docker, GitHub Actions |
-| Deployment | AWS / Render / Railway |
-
-
-⚔️ Sample Output:
-
-![image](https://github.com/user-attachments/assets/144c2b2c-4502-4318-9955-f48f47586ad3)
+-   **Service and DTO Layers:** Refactor the architecture to include a business logic layer (Services) and Data Transfer Objects (DTOs) for the API.
+-   **CRUD Operations:** Implement `POST`, `PUT`, and `DELETE` endpoints for full resource management.
+-   **Validation:** Add input validation and custom exception handling.
+-   **Security:** Implement authentication and authorization using Spring Security (e.g., JWT).
+-   **Testing:** Create a comprehensive suite of unit and integration tests.
+-   **Containerization:** Dockerize the application and database for easy deployment.
+-   **CI/CD:** Set up a continuous integration and deployment pipeline.
