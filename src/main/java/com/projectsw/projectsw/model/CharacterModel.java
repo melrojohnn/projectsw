@@ -23,6 +23,7 @@ public class CharacterModel {
     @Column(unique = true)
     private String email;
     private int age;
+    private String rank;
     private String homeland;
 
 

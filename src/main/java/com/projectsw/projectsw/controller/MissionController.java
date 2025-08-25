@@ -4,22 +4,32 @@ import com.projectsw.projectsw.model.MissionModel;
 import com.projectsw.projectsw.repository.MissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/missions")
+@RequestMapping("/mission")
 public class MissionController {
 
-    @Autowired
-    private MissionRepository missionRepository;
-
-    @GetMapping
-    public ResponseEntity<List<MissionModel>> getAllMissions() {
-        List<MissionModel> missions = missionRepository.findAll();
-        return ResponseEntity.ok(missions);
+    @PostMapping("/create")
+    public String createMission() {
+        return "Mission created successfully";
     }
+
+    @GetMapping("/all")
+    public String listAllMissions() {
+        return "Show all missions";
+    }
+
+    @PutMapping("/update/{id}")
+    public String updateMissionByID(){
+        return "Mission updated successfully";
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public String deleteMissionByID(){
+        return "Mission deleted successfully";
+    }
+
 }
