@@ -2,6 +2,7 @@ package com.projectsw.projectsw.controller;
 
 import com.projectsw.projectsw.model.CharacterModel;
 import com.projectsw.projectsw.repository.CharacterRepository;
+import com.projectsw.projectsw.service.CharacterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,9 @@ import java.util.List;
 @RequestMapping("/character")
 public class CharacterController {
 
+    // Injeta a instância do CharacterService
+    @Autowired
+    private CharacterService characterService;
 
     @PostMapping("/create")
     public String createCharacter() {
@@ -19,8 +23,9 @@ public class CharacterController {
     }
 
     @GetMapping("/all")
-    public String getAllCharacters() {
-        return "Show all characters";
+    public List<CharacterModel> getAllCharacters() {
+        // Chama o método a partir da instância injetada
+        return characterService.getAllCharacters();
     }
 
     @PutMapping("/update/{id}")
