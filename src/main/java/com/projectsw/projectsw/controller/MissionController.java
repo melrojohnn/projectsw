@@ -1,16 +1,18 @@
 package com.projectsw.projectsw.controller;
 
-import com.projectsw.projectsw.model.MissionModel;
+import com.projectsw.projectsw.dto.MissionCreateDTO;
+import com.projectsw.projectsw.dto.MissionResponseDTO;
 import com.projectsw.projectsw.service.MissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * REST Controller for managing Mission entities.
- * Exposes endpoints for CRUD operations on missions.
+ * Exposes endpoints for CRUD operations on missions using public UUIDs and DTOs.
  */
 @RestController
 @RequestMapping("/mission")
@@ -21,37 +23,33 @@ public class MissionController {
 
     /**
      * Endpoint to create a new mission.
-     * HTTP Method: POST
-     * URL: /mission/create
-     * @param mission The mission data sent in the request body.
-     * @return The newly created mission.
+     * @param missionDTO The mission data sent in the request body.
+     * @return The newly created mission data as a DTO.
      */
     @PostMapping("/create")
-    public MissionModel createMission(@RequestBody MissionModel mission) {
-        return missionService.createMission(mission);
+    public ResponseEntity<MissionResponseDTO> createMission(@RequestBody MissionCreateDTO missionDTO) {
+        MissionResponseDTO createdMission = missionService.createMission(missionDTO);
+        return ResponseEntity.ok(createdMission);
     }
 
     /**
      * Endpoint to retrieve all missions.
-     * HTTP Method: GET
-     * URL: /mission/all
-     * @return A list of all missions.
+     * @return A list of all missions as DTOs.
      */
     @GetMapping("/all")
-    public List<MissionModel> getAllMissions() {
-        return missionService.getAllMissions();
+    public ResponseEntity<List<MissionResponseDTO>> getAllMissions() {
+        List<MissionResponseDTO> missions = missionService.getAllMissions();
+        return ResponseEntity.ok(missions);
     }
 
     /**
-     * Endpoint to retrieve a single mission by its ID.
-     * HTTP Method: GET
-     * URL: /mission/list/{id}
-     * @param id The ID of the mission, passed in the URL path.
-     * @return A ResponseEntity containing the mission if found, or 404 Not Found.
+     * Endpoint to retrieve a single mission by its public ID.
+     * @param id The public UUID of the mission.
+     * @return A ResponseEntity containing the mission DTO if found, or 404 Not Found.
      */
     @GetMapping("/list/{id}")
-    public ResponseEntity<MissionModel> getMissionById(@PathVariable Long id) {
-        MissionModel mission = missionService.getMissionById(id);
+    public ResponseEntity<MissionResponseDTO> getMissionById(@PathVariable UUID id) {
+        MissionResponseDTO mission = missionService.getMissionByPublicId(id);
         if (mission != null) {
             return ResponseEntity.ok(mission);
         } else {
@@ -60,16 +58,14 @@ public class MissionController {
     }
 
     /**
-     * Endpoint to update an existing mission.
-     * HTTP Method: PUT
-     * URL: /mission/update/{id}
-     * @param id The ID of the mission to update.
-     * @param missionDetails The new mission data from the request body.
-     * @return A ResponseEntity containing the updated mission, or 404 Not Found.
+     * Endpoint to update an existing mission by its public ID.
+     * @param id The public UUID of the mission to update.
+     * @param missionDTO The new mission data from the request body.
+     * @return A ResponseEntity containing the updated mission DTO, or 404 Not Found.
      */
     @PutMapping("/update/{id}")
-    public ResponseEntity<MissionModel> updateMissionByID(@PathVariable Long id, @RequestBody MissionModel missionDetails){
-        MissionModel updatedMission = missionService.updateMission(id, missionDetails);
+    public ResponseEntity<MissionResponseDTO> updateMissionByID(@PathVariable UUID id, @RequestBody MissionCreateDTO missionDTO){
+        MissionResponseDTO updatedMission = missionService.updateMission(id, missionDTO);
         if (updatedMission != null) {
             return ResponseEntity.ok(updatedMission);
         } else {
@@ -78,15 +74,17 @@ public class MissionController {
     }
 
     /**
-     * Endpoint to delete a mission by its ID.
-     * HTTP Method: DELETE
-     * URL: /mission/delete/{id}
-     * @param id The ID of the mission to delete.
-     * @return A ResponseEntity with a success message.
+     * Endpoint to delete a mission by its public ID.
+     * @param id The public UUID of the mission to delete.
+     * @return A ResponseEntity with a success message or 404 Not Found.
      */
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteMissionByID(@PathVariable Long id){
-        missionService.deleteMission(id);
-        return ResponseEntity.ok("Mission deleted successfully");
+    public ResponseEntity<String> deleteMissionByID(@PathVariable UUID id){
+        boolean isDeleted = missionService.deleteMission(id);
+        if (isDeleted) {
+            return ResponseEntity.ok("Mission with ID " + id + " deleted successfully.");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
