@@ -4,12 +4,13 @@ A RESTful API built with Spring Boot to manage characters and missions in the St
 
 ## ✨ Features Implemented
 
--   **RESTful API:** Exposes endpoints for managing `Missions` and `Characters`.
--   **Database Integration:** Uses Spring Data JPA to connect to a PostgreSQL database.
--   **Database Versioning:** Employs **Flyway** to manage database schema changes and seed initial data, ensuring a consistent and reproducible database state.
--   **Secure Configuration:** Database credentials and other sensitive data are kept out of version control using a `.env` file, loaded on startup.
--   **Bidirectional Relationship Handling:** Correctly manages JSON serialization for related entities to prevent infinite loops.
--   **Clean Architecture:** Ready for future expansion with a clear separation of concerns (Controllers, Repositories, and soon, Services and DTOs).
+-   **Service Layer Architecture:** Business logic is encapsulated in Service classes, separating concerns from the web layer.
+-   **Data Transfer Object (DTO) Pattern:** The API uses specific DTOs for requests (`CharacterCreateDTO`) and responses (`CharacterResponseDTO`), providing a clean and secure public contract.
+-   **Public UUIDs:** All API endpoints use non-sequential `UUID`s for resource identification, enhancing security and preventing data scraping.
+-   **Type-Safe Data Modeling:** Uses Java `Enums` for concepts like `MissionStatus`, `MissionDifficulty`, and `Faction` to ensure data integrity.
+-   **Business Logic Validation:** The service layer validates incoming data (e.g., ensuring a character's `rank` is valid for their `faction`).
+-   **Database Versioning:** Employs **Flyway** to manage database schema changes and seed initial data.
+-   **Secure Configuration:** Database credentials are kept out of version control using a `.env` file.
 
 ## 🚀 Technologies Used
 
@@ -29,7 +30,7 @@ A RESTful API built with Spring Boot to manage characters and missions in the St
 
 -   Java 17 (or higher)
 -   Apache Maven
--   A running PostgreSQL instance
+-   A running PostgreSQL instance with the `pgcrypto` extension enabled.
 
 ### How to Run
 
@@ -48,13 +49,11 @@ A RESTful API built with Spring Boot to manage characters and missions in the St
     ```
 
 3.  **Build the project:**
-    Use the Maven wrapper to build the application. This will also download all necessary dependencies.
     ```sh
     ./mvnw clean install
     ```
 
 4.  **Run the application:**
-    Once the build is complete, you can start the application.
     ```sh
     java -jar target/projectsw-0.0.1-SNAPSHOT.jar
     ```
@@ -62,42 +61,48 @@ A RESTful API built with Spring Boot to manage characters and missions in the St
 
 ## API Endpoints
 
-The following endpoints are currently available:
+All endpoints use `UUID`s as public identifiers.
+
+### Characters (`/character`)
 
 | Method | URL                | Description                               |
 | ------ | ------------------ | ----------------------------------------- |
-| `GET`  | `/missions`        | Retrieves a list of all missions.         |
-| `GET`  | `/characters`      | Retrieves a list of all characters.       |
+| `POST` | `/create`          | Creates a new character.                  |
+| `GET`  | `/all`             | Retrieves a list of all characters.       |
+| `GET`  | `/list/{id}`       | Retrieves a single character by its UUID. |
+| `PUT`  | `/update/{id}`     | Updates a character by its UUID.          |
+| `DELETE`| `/delete/{id}`    | Deletes a character by its UUID.          |
 
-### Sample Response for `/missions`
+### Missions (`/mission`)
+
+| Method | URL                | Description                               |
+| ------ | ------------------ | ----------------------------------------- |
+| `POST` | `/create`          | Creates a new mission (status defaults to `PENDING`). |
+| `GET`  | `/all`             | Retrieves a list of all missions.         |
+| `GET`  | `/list/{id}`       | Retrieves a single mission by its UUID.   |
+| `PUT`  | `/update/{id}`     | Updates a mission by its UUID.            |
+| `DELETE`| `/delete/{id}`    | Deletes a mission by its UUID.            |
+
+### Sample Request Body for `POST /character/create`
 
 ```json
-[
-  {
-    "id": 1,
-    "title": "Steal Death Star Plans",
-    "description": "Infiltrate the Empire base on Scarif to steal the plans for the Death Star.",
-    "status": "ACTIVE",
-    "members": [
-      {
-        "id": 3,
-        "name": "Jyn Erso",
-        "email": "jyn@rebellion.org",
-        "age": 21,
-        "homeland": "Vallt"
-      }
-    ]
-  }
-]
+{
+  "name": "Poe Dameron",
+  "email": "poe@resistance.org",
+  "age": 32,
+  "faction": "REBEL_ALLIANCE",
+  "rank": "COMMANDER",
+  "homeland": "Yavin 4",
+  "missionId": "a4b1c2d3-e4f5-6789-0123-456789abcdef" // Optional UUID of the mission
+}
 ```
 
 ## 🎯 Future Roadmap
 
 This project serves as a foundation. Future enhancements include:
 
--   **Service and DTO Layers:** Refactor the architecture to include a business logic layer (Services) and Data Transfer Objects (DTOs) for the API.
--   **CRUD Operations:** Implement `POST`, `PUT`, and `DELETE` endpoints for full resource management.
--   **Validation:** Add input validation and custom exception handling.
+-   **Input Validation:** Implement robust validation on DTOs using annotations (`@NotNull`, `@Email`, `@Size`, etc.).
+-   **Custom Exception Handling:** Create a `GlobalExceptionHandler` to provide clear and consistent error responses for the API.
 -   **Security:** Implement authentication and authorization using Spring Security (e.g., JWT).
 -   **Testing:** Create a comprehensive suite of unit and integration tests.
 -   **Containerization:** Dockerize the application and database for easy deployment.
