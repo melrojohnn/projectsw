@@ -34,7 +34,7 @@ public class MissionModel {
     private MissionStatus status;
 
     @Enumerated(EnumType.STRING)
-    private MissionDifficulty rank;
+    private MissionDifficulty rank; // **CORRIGIDO:** O nome do campo é 'rank' para corresponder ao banco
 
     @OneToMany(mappedBy = "mission")
     @JsonManagedReference

@@ -7,13 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-/**
- * REST Controller for managing Character entities.
- * Exposes endpoints for CRUD operations on characters using public UUIDs.
- */
 @RestController
 @RequestMapping("/character")
 public class CharacterController {
@@ -21,32 +19,24 @@ public class CharacterController {
     @Autowired
     private CharacterService characterService;
 
-    /**
-     * Endpoint to create a new character.
-     * @param characterDTO The character data sent in the request body.
-     * @return The newly created character data as a DTO.
-     */
     @PostMapping("/create")
-    public ResponseEntity<CharacterResponseDTO> createCharacter(@RequestBody CharacterCreateDTO characterDTO) {
+    public ResponseEntity<Map<String, Object>> createCharacter(@RequestBody CharacterCreateDTO characterDTO) {
         CharacterResponseDTO createdCharacter = characterService.createCharacter(characterDTO);
-        return ResponseEntity.ok(createdCharacter);
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Character created successfully.");
+        Map<String, Object> characterData = new LinkedHashMap<>();
+        characterData.put("id", createdCharacter.getId()); // **CORRIGIDO:** Chama getId() no DTO
+        characterData.put("name", createdCharacter.getName());
+        response.put("data", characterData);
+        return ResponseEntity.status(201).body(response);
     }
 
-    /**
-     * Endpoint to retrieve all characters.
-     * @return A list of all characters as DTOs.
-     */
     @GetMapping("/all")
     public ResponseEntity<List<CharacterResponseDTO>> getAllCharacters() {
         List<CharacterResponseDTO> characters = characterService.getAllCharacters();
         return ResponseEntity.ok(characters);
     }
 
-    /**
-     * Endpoint to retrieve a single character by its public ID.
-     * @param id The public UUID of the character.
-     * @return A ResponseEntity containing the character DTO if found, or 404 Not Found.
-     */
     @GetMapping("/list/{id}")
     public ResponseEntity<CharacterResponseDTO> getCharacterById(@PathVariable UUID id) {
         CharacterResponseDTO character = characterService.getCharacterByPublicId(id);
@@ -56,35 +46,30 @@ public class CharacterController {
             return ResponseEntity.notFound().build();
         }
     }
-//0c5eae90-fbb8-4714-9f52-21e77bddf5fb
-    /**
-     * Endpoint to update an existing character by its public ID.
-     * @param id The public UUID of the character to update.
-     * @param characterDTO The new character data from the request body.
-     * @return A ResponseEntity containing the updated character DTO, or 404 Not Found.
-     */
+
     @PutMapping("/update/{id}")
-    public ResponseEntity<CharacterResponseDTO> updateCharacterByID(@PathVariable UUID id, @RequestBody CharacterCreateDTO characterDTO){
+    public ResponseEntity<Map<String, Object>> updateCharacterByID(@PathVariable UUID id, @RequestBody CharacterCreateDTO characterDTO){
         CharacterResponseDTO updatedCharacter = characterService.updateCharacter(id, characterDTO);
-        if (updatedCharacter != null) {
-            return ResponseEntity.ok(updatedCharacter);
-        } else {
+        if (updatedCharacter == null) {
             return ResponseEntity.notFound().build();
         }
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Character updated successfully.");
+        Map<String, Object> characterData = new LinkedHashMap<>();
+        characterData.put("id", updatedCharacter.getId()); // **CORRIGIDO:** Chama getId() no DTO
+        characterData.put("name", updatedCharacter.getName());
+        response.put("data", characterData);
+        return ResponseEntity.ok(response);
     }
 
-    /**
-     * Endpoint to delete a character by its public ID.
-     * @param id The public UUID of the character to delete.
-     * @return A ResponseEntity with a success message or 404 Not Found.
-     */
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteCharacterByID(@PathVariable UUID id){
+    public ResponseEntity<Map<String, String>> deleteCharacterByID(@PathVariable UUID id){
         boolean isDeleted = characterService.deleteCharacter(id);
-        if (isDeleted) {
-            return ResponseEntity.ok("Character with ID " + id + " deleted successfully.");
-        } else {
+        if (!isDeleted) {
             return ResponseEntity.notFound().build();
         }
+        Map<String, String> response = new LinkedHashMap<>();
+        response.put("message", "Character with ID " + id + " deleted successfully.");
+        return ResponseEntity.ok(response);
     }
 }

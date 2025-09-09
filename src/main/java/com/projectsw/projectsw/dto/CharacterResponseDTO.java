@@ -13,7 +13,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class CharacterResponseDTO {
-    private UUID id; // This will be the publicId
+    private UUID id; // **CORRIGIDO:** Garante que o campo 'id' (publicId) existe
     private String name;
     private String email;
     private int age;
