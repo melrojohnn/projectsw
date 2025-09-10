@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Star Wars Characters Management</title>
+  <style>
+    /* Cores escuras e estilo Star Wars */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 20px;
+      background: #121212; /* escuro */
+      color: #cfd8dc; /* cinza claro */
+    }
+
+    h1 {
+      color: #0d47a1; /* azul escuro Star Wars */
+      text-shadow: 0 0 8px #82b1ff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+      background: #263238; /* cinza metálico escuro */
+      color: #eceff1;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #455a64;
+      text-align: left;
+    }
+
+    thead {
+      background-color: #1a237e; /* azul escuro intenso */
+      color: #bbdefb; /* azul claro */
+      text-transform: uppercase;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #37474f;
+    }
+
+    tbody tr:hover {
+      background-color: #455a64;
+    }
+
+    img {
+      max-width: 80px;
+      height: auto;
+      border-radius: 4px;
+      box-shadow: 0 0 5px #2962ff;
+    }
+
+    select, input {
+      padding: 6px;
+      margin: 4px 0;
+      border-radius: 4px;
+      border: 1px solid #406aeb;
+      background-color: #263238;
+      color: #eceff1;
+      font-size: 1em;
+      width: 100%;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
+    }
+
+    select:focus, input:focus {
+      border-color: #82b1ff;
+      outline: none;
+      background-color: #34515e;
+    }
+
+    button {
+      padding: 8px 18px;
+      margin: 4px 10px 4px 0;
+      cursor: pointer;
+      border-radius: 4px;
+      border: none;
+      background-color: #0d47a1;
+      color: #bbdefb;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #2962ff;
+    }
+
+    .form-container {
+      margin-top: 20px;
+      padding: 25px 30px;
+      border: 1px solid #455a64;
+      border-radius: 8px;
+      background: #37474f;
+      color: #eceff1;
+      max-width: 600px;
+    }
+
+    .form-container h2 {
+      margin-bottom: 20px;
+      color: #82b1ff;
+      text-shadow: 0 0 4px #2962ff;
+    }
+
+    form > div {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    form > div > label {
+      width: 110px; /* largura fixa para alinhamento */
+      font-weight: 600;
+      margin-right: 15px;
+      flex-shrink: 0;
+      color: #bbdefb;
+      text-align: right;
+    }
+
+    form > div > input,
+    form > div > select {
+      flex-grow: 1;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Star Wars Characters</h1>
+
+<div class="form-container">
+  <h2>Create / Update Character</h2>
+  <form id="character-form">
+    <input type="hidden" id="char-id" />
+    <div>
+      <label for="name">Name:</label>
+      <input type="text" id="name" required />
+    </div>
+    <div>
+      <label for="email">Email:</label>
+      <input type="email" id="email" required />
+    </div>
+    <div>
+      <label for="age">Age:</label>
+      <input type="number" id="age" required />
+    </div>
+    <div>
+      <label for="faction">Faction:</label>
+      <select id="faction" required>
+        <option value="">Select Faction</option>
+        <option value="REBEL_ALLIANCE">REBEL_ALLIANCE</option>
+        <option value="GALACTIC_EMPIRE">GALACTIC_EMPIRE</option>
+        <option value="JEDI_ORDER">JEDI_ORDER</option>
+        <option value="SITH">SITH</option>
+        <option value="DROID_ARMY">DROID_ARMY</option>
+        <option value="UNAFFILIATED">UNAFFILIATED</option>
+      </select>
+    </div>
+    <div>
+      <label for="rank">Rank:</label>
+      <select id="rank" required>
+        <option value="">Select Rank</option>
+      </select>
+    </div>
+    <div>
+      <label for="homeland">Homeland:</label>
+      <input type="text" id="homeland" />
+    </div>
+    <div>
+      <label for="imageUrl">Image URL:</label>
+      <input type="url" id="imageUrl" />
+    </div>
+    <div>
+      <label for="mission">Mission:</label>
+      <select id="mission">
+        <option value="">No Mission</option>
+        <!-- Missions will be dynamically added here -->
+      </select>
+    </div>
+    <button type="submit">Save Character</button>
+    <button type="button" id="reset-btn">Reset Form</button>
+  </form>
+</div>
+
+<table>
+  <thead>
+  <tr>
+    <th>Image</th>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Age</th>
+    <th>Faction</th>
+    <th>Rank</th>
+    <th>Homeland</th>
+    <th>Mission</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody id="characters-table">
+  <!-- Characters will be dynamically added here -->
+  </tbody>
+</table>
+
+<script>
+  const CHARACTER_API_URL = "http://localhost:8181/character";
+  const MISSION_API_URL = "http://localhost:8181/mission";
+
+  // Map faction to rank options
+  const ranksByFaction = {
+      REBEL_ALLIANCE: ["RECRUIT","PRIVATE","SERGEANT","LIEUTENANT","CAPTAIN","COMMANDER","GENERAL"],
+      GALACTIC_EMPIRE: ["CADET","TROOPER","CAPTAIN","COMMANDER","MOFF","GRAND_MOFF"],
+      JEDI_ORDER: ["PADAWAN","KNIGHT","MASTER","GRAND_MASTER"],
+      SITH: ["ACOLYTE","SITH_APPRENTICE","SITH_LORD","DARTH"],
+      DROID_ARMY: ["PROTOCOL_DROID","ASTROMECH_DROID","BATTLE_DROID","ASSASSIN_DROID"],
+      UNAFFILIATED: ["BOUNTY_HUNTER", "MANDALORIAN", "SMUGGLER", "MERCENARY", "PIRATE", "SCOUT", "REBEL_UNAFFILIATED", "GALACTIC_EMPIRE_UNAFFILIATED", "JEDI_ORDER_UNAFFILIATED"]
+  };
+
+  // Elements
+  const tableBody = document.getElementById("characters-table");
+  const factionSelect = document.getElementById("faction");
+  const rankSelect = document.getElementById("rank");
+  const missionSelect = document.getElementById("mission");
+  const form = document.getElementById("character-form");
+  const resetBtn = document.getElementById("reset-btn");
+  const charIdInput = document.getElementById("char-id");
+
+  // Load all characters
+  async function loadCharacters() {
+      try {
+          const res = await fetch(`${CHARACTER_API_URL}/all`);
+          if (!res.ok) throw new Error('Failed to load characters');
+          const data = await res.json();
+          tableBody.innerHTML = "";
+          data.forEach(char => {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                  <td><img src="${char.imageUrl || 'https://via.placeholder.com/80'}" alt="Image"/></td>
+                  <td>${char.name}</td>
+                  <td>${char.email}</td>
+                  <td>${char.age}</td>
+                  <td>${char.faction}</td>
+                  <td>${char.rank}</td>
+                  <td>${char.homeland || 'N/A'}</td>
+                  <td>${char.mission ? char.mission.title : 'N/A'}</td>
+                  <td>
+                      <button onclick="editCharacter('${char.id}')">Edit</button>
+                      <button onclick="deleteCharacter('${char.id}')">Delete</button>
+                  </td>
+              `;
+              tableBody.appendChild(tr);
+          });
+      } catch (error) {
+          console.error("Error loading characters:", error);
+          alert("Could not load character data.");
+      }
+  }
+
+  // Load all missions into the dropdown
+  async function loadMissions() {
+      try {
+          const res = await fetch(`${MISSION_API_URL}/all`);
+          if (!res.ok) throw new Error('Failed to load missions');
+          const missions = await res.json();
+          missionSelect.innerHTML = '<option value="">No Mission</option>'; // Clear previous options
+          missions.forEach(mission => {
+              const opt = document.createElement("option");
+              opt.value = mission.id;
+              opt.textContent = mission.title;
+              missionSelect.appendChild(opt);
+          });
+      } catch (error) {
+          console.error("Error loading missions:", error);
+          alert("Could not load mission data.");
+      }
+  }
+
+  // Populate ranks when faction changes
+  factionSelect.addEventListener("change", () => {
+      const faction = factionSelect.value;
+      rankSelect.innerHTML = `<option value="">Select Rank</option>`;
+      if (ranksByFaction[faction]) {
+          ranksByFaction[faction].forEach(rank => {
+              const opt = document.createElement("option");
+              opt.value = rank;
+              opt.textContent = rank;
+              rankSelect.appendChild(opt);
+          });
+      }
+  });
+
+  // Handle form submit for create/update
+  form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const payload = {
+          name: document.getElementById("name").value,
+          email: document.getElementById("email").value,
+          age: Number(document.getElementById("age").value),
+          faction: factionSelect.value || null,
+          rank: rankSelect.value || null,
+          homeland: document.getElementById("homeland").value || null,
+          imageUrl: document.getElementById("imageUrl").value || null,
+          missionId: missionSelect.value || null
+      };
+
+      const charId = charIdInput.value;
+      const url = charId ? `${CHARACTER_API_URL}/update/${charId}` : `${CHARACTER_API_URL}/create`;
+      const method = charId ? "PUT" : "POST";
+
+      try {
+          const res = await fetch(url, {
+              method: method,
+              headers: {"Content-Type": "application/json"},
+              body: JSON.stringify(payload)
+          });
+
+          if (!res.ok) {
+              // Try to get error message from backend, otherwise use default
+              const errorData = await res.json().catch(() => ({ message: res.statusText }));
+              throw new Error(errorData.message || 'An unknown error occurred.');
+          }
+
+          resetForm();
+          loadCharacters();
+      } catch (error) {
+          console.error('Save operation failed:', error);
+          alert(`Error saving character: ${error.message}`);
+      }
+  });
+
+  // Edit character
+  async function editCharacter(id) {
+      try {
+          const res = await fetch(`${CHARACTER_API_URL}/list/${id}`);
+          if (!res.ok) throw new Error('Character not found');
+          const char = await res.json();
+          charIdInput.value = char.id;
+          document.getElementById("name").value = char.name;
+          document.getElementById("email").value = char.email;
+          document.getElementById("age").value = char.age;
+          factionSelect.value = char.faction;
+          factionSelect.dispatchEvent(new Event("change"));
+          rankSelect.value = char.rank;
+          document.getElementById("homeland").value = char.homeland || "";
+          document.getElementById("imageUrl").value = char.imageUrl || "";
+          missionSelect.value = char.mission ? char.mission.id : "";
+      } catch (error) {
+          console.error("Error fetching character for edit:", error);
+          alert("Could not load character details for editing.");
+      }
+  }
+
+  // Delete character
+  async function deleteCharacter(id) {
+      if (confirm("Are you sure you want to delete this character?")) {
+          try {
+              const res = await fetch(`${CHARACTER_API_URL}/delete/${id}`, { method: "DELETE" });
+              if (!res.ok) throw new Error('Failed to delete character');
+              loadCharacters();
+          } catch (error) {
+              console.error("Error deleting character:", error);
+              alert("Could not delete the character.");
+          }
+      }
+  }
+
+  // Reset form
+  resetBtn.addEventListener("click", resetForm);
+  function resetForm() {
+      charIdInput.value = "";
+      form.reset();
+      rankSelect.innerHTML = `<option value="">Select Rank</option>`;
+      missionSelect.value = "";
+  }
+
+  // Initial load
+  loadCharacters();
+  loadMissions();
+</script>
+
+</body>
+</html>

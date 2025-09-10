@@ -27,7 +27,7 @@ public class CharacterService {
     }
 
     public List<CharacterResponseDTO> getAllCharacters() {
-        return characterRepository.findAll()
+        return characterRepository.findAllWithMission()
                 .stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
@@ -35,6 +35,7 @@ public class CharacterService {
 
     public CharacterResponseDTO createCharacter(CharacterCreateDTO characterDTO) {
         validateRankForFaction(characterDTO.getFaction(), characterDTO.getRank());
+
         CharacterModel character = new CharacterModel();
         character.setName(characterDTO.getName());
         character.setEmail(characterDTO.getEmail());
@@ -42,25 +43,32 @@ public class CharacterService {
         character.setFaction(characterDTO.getFaction());
         character.setRank(characterDTO.getRank().toUpperCase());
         character.setHomeland(characterDTO.getHomeland());
+        character.setImageUrl(characterDTO.getImageUrl());
+
         if (characterDTO.getMissionId() != null) {
             MissionModel mission = missionRepository.findByPublicId(characterDTO.getMissionId())
                     .orElseThrow(() -> new EntityNotFoundException("Mission not found with ID: " + characterDTO.getMissionId()));
             character.setMission(mission);
         }
+
         CharacterModel savedCharacter = characterRepository.save(character);
         return toResponseDTO(savedCharacter);
     }
 
     public CharacterResponseDTO updateCharacter(UUID publicId, CharacterCreateDTO characterDTO) {
         validateRankForFaction(characterDTO.getFaction(), characterDTO.getRank());
+
         CharacterModel existingCharacter = characterRepository.findByPublicId(publicId)
                 .orElseThrow(() -> new EntityNotFoundException("Character not found with ID: " + publicId));
+
         existingCharacter.setName(characterDTO.getName());
         existingCharacter.setEmail(characterDTO.getEmail());
         existingCharacter.setAge(characterDTO.getAge());
         existingCharacter.setFaction(characterDTO.getFaction());
         existingCharacter.setRank(characterDTO.getRank().toUpperCase());
         existingCharacter.setHomeland(characterDTO.getHomeland());
+        existingCharacter.setImageUrl(characterDTO.getImageUrl());
+
         if (characterDTO.getMissionId() != null) {
             MissionModel mission = missionRepository.findByPublicId(characterDTO.getMissionId())
                     .orElseThrow(() -> new EntityNotFoundException("Mission not found with ID: " + characterDTO.getMissionId()));
@@ -68,6 +76,7 @@ public class CharacterService {
         } else {
             existingCharacter.setMission(null);
         }
+
         CharacterModel updatedCharacter = characterRepository.save(existingCharacter);
         return toResponseDTO(updatedCharacter);
     }
@@ -87,19 +96,21 @@ public class CharacterService {
 
     private CharacterResponseDTO toResponseDTO(CharacterModel character) {
         CharacterResponseDTO dto = new CharacterResponseDTO();
-        dto.setId(character.getPublicId()); // **CORRIGIDO:** Usa o setter correto.
+        dto.setId(character.getPublicId());
         dto.setName(character.getName());
         dto.setEmail(character.getEmail());
         dto.setAge(character.getAge());
         dto.setFaction(character.getFaction());
         dto.setRank(character.getRank());
         dto.setHomeland(character.getHomeland());
+        dto.setImageUrl(character.getImageUrl());
+
         if (character.getMission() != null) {
             MissionSummaryDTO missionDTO = new MissionSummaryDTO(
-                    character.getMission().getPublicId(),
-                    character.getMission().getTitle(),
-                    character.getMission().getDescription(),
-                    character.getMission().getStatus()
+                character.getMission().getPublicId(),
+                character.getMission().getTitle(),
+                character.getMission().getDescription(),
+                character.getMission().getStatus()
             );
             dto.setMission(missionDTO);
         }
@@ -110,16 +121,30 @@ public class CharacterService {
         if (faction == null || rank == null || rank.trim().isEmpty()) {
             throw new IllegalArgumentException("Faction and Rank cannot be null or empty.");
         }
+
         try {
             String upperRank = rank.toUpperCase();
             switch (faction) {
-                case REBEL_ALLIANCE: RebelRank.valueOf(upperRank); break;
-                case GALACTIC_EMPIRE: EmpireRank.valueOf(upperRank); break;
-                case JEDI_ORDER: LightsideRank.valueOf(upperRank); break;
-                case SITH: DarksideRank.valueOf(upperRank); break;
-                case DROID_ARMY: DroidRank.valueOf(upperRank); break;
-                case UNAFFILIATED: break;
-                default: throw new IllegalArgumentException("Unknown faction provided: " + faction);
+                case REBEL_ALLIANCE:
+                    RebelRank.valueOf(upperRank);
+                    break;
+                case GALACTIC_EMPIRE:
+                    EmpireRank.valueOf(upperRank);
+                    break;
+                case JEDI_ORDER:
+                    LightsideRank.valueOf(upperRank);
+                    break;
+                case SITH:
+                    DarksideRank.valueOf(upperRank);
+                    break;
+                case DROID_ARMY:
+                    DroidRank.valueOf(upperRank);
+                    break;
+                case UNAFFILIATED:
+                    Unaffiliated.valueOf(upperRank); // Validate against the Unaffiliated enum
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown faction provided: " + faction);
             }
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Rank '" + rank + "' is not valid for faction '" + faction + "'.");

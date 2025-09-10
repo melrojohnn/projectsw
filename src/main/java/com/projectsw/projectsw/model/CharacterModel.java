@@ -39,8 +39,11 @@ public class CharacterModel {
     private String rank;
     private String homeland;
 
+    @Column(length = 1024) // Allow for longer URLs
+    private String imageUrl;
 
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.EAGER) // ** Force eager loading to fix the issue **
     @JoinColumn(name = "mission_id")
     @JsonBackReference
     private MissionModel mission;

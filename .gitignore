@@ -68,6 +68,7 @@ application.yml
 # Mas ignorar arquivos locais de ambiente
 .env
 *.env
+flyway.properties
 
 # ======================
 # System files

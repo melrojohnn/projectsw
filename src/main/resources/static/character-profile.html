@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Character Profile</title>
+  <style>
+    body { font-family: sans-serif; background-color: #121212; color: #cfd8dc; margin: 0; padding: 20px; }
+    .container { max-width: 800px; margin: auto; background: #263238; padding: 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.7); }
+    h1 { color: #82b1ff; text-shadow: 0 0 8px #2962ff; margin-top: 0; }
+    .profile-header { display: flex; align-items: center; gap: 30px; margin-bottom: 30px; }
+    .profile-header img { width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 3px solid #406aeb; }
+    .profile-name { font-size: 2.5em; font-weight: bold; }
+    .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .detail-item { background: #37474f; padding: 15px; border-radius: 4px; }
+    .detail-item strong { display: block; color: #bbdefb; margin-bottom: 5px; text-transform: uppercase; font-size: 0.8em; }
+    .mission-card { border: 1px solid #455a64; padding: 15px; border-radius: 4px; margin-top: 20px; }
+    .mission-card h3 { margin-top: 0; color: #82b1ff; }
+    .actions { margin-top: 30px; text-align: right; }
+    .btn { padding: 10px 20px; cursor: pointer; border-radius: 4px; border: none; font-weight: bold; text-decoration: none; display: inline-block; }
+    .edit-btn { background-color: #0d47a1; color: #bbdefb; margin-right: 10px; }
+    .edit-btn:hover { background-color: #2962ff; }
+    .delete-btn { background-color: #b71c1c; color: #ffcdd2; }
+    .delete-btn:hover { background-color: #d32f2f; }
+    .back-link { display: inline-block; margin-bottom: 20px; color: #82b1ff; text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <a href="./characters.html" class="back-link">&larr; Back to Character List</a>
+
+  <div class="container" id="profile-container" style="display:none;">
+    <div class="profile-header">
+      <img id="char-image" src="" alt="Character Image">
+      <div>
+        <h1 id="char-name"></h1>
+        <div id="char-faction-rank"></div>
+      </div>
+    </div>
+
+    <div class="details-grid">
+      <div class="detail-item">
+        <strong>Email</strong>
+        <span id="char-email"></span>
+      </div>
+      <div class="detail-item">
+        <strong>Age</strong>
+        <span id="char-age"></span>
+      </div>
+      <div class="detail-item">
+        <strong>Homeland</strong>
+        <span id="char-homeland"></span>
+      </div>
+    </div>
+
+    <div id="mission-details"></div>
+
+    <div class="actions">
+      <a href="#" id="edit-btn" class="btn edit-btn">Edit</a>
+      <button id="delete-btn" class="btn delete-btn">Delete</button>
+    </div>
+  </div>
+
+<script>
+  const CHARACTER_API_URL = "http://localhost:8181/character";
+  const profileContainer = document.getElementById("profile-container");
+
+  // Function to get the character ID from the URL
+  function getCharacterId() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id');
+  }
+
+  // Function to load and display character data
+  async function loadCharacterProfile() {
+    const id = getCharacterId();
+    if (!id) {
+      window.location.href = './characters.html'; // Redirect if no ID is present
+      return;
+    }
+
+    try {
+      const res = await fetch(`${CHARACTER_API_URL}/list/${id}`);
+      if (!res.ok) throw new Error('Character not found');
+      const char = await res.json();
+
+      // Populate the page with data
+      document.getElementById("char-image").src = char.imageUrl || 'https://via.placeholder.com/150';
+      document.getElementById("char-name").textContent = char.name;
+      document.getElementById("char-faction-rank").textContent = `${char.faction} - ${char.rank}`;
+      document.getElementById("char-email").textContent = char.email;
+      document.getElementById("char-age").textContent = char.age;
+      document.getElementById("char-homeland").textContent = char.homeland || 'N/A';
+
+      // Populate mission details
+      const missionContainer = document.getElementById("mission-details");
+      if (char.mission) {
+        missionContainer.innerHTML = `
+          <div class="mission-card">
+            <h3>Assigned Mission</h3>
+            <div class="details-grid">
+              <div class="detail-item"><strong>Title:</strong> ${char.mission.title}</div>
+              <div class="detail-item"><strong>Status:</strong> ${char.mission.status}</div>
+            </div>
+          </div>
+        `;
+      } else {
+        missionContainer.innerHTML = '<div class="mission-card"><p>No mission assigned.</p></div>';
+      }
+
+      // Set up action buttons
+      document.getElementById("edit-btn").href = `./character-form.html?id=${char.id}`;
+      document.getElementById("delete-btn").onclick = () => deleteCharacter(char.id);
+
+      // Show the profile container
+      profileContainer.style.display = 'block';
+
+    } catch (error) {
+      console.error("Failed to load character profile:", error);
+      alert("Could not load character profile. Redirecting to list.");
+      window.location.href = './characters.html';
+    }
+  }
+
+  // Function to delete a character
+  async function deleteCharacter(id) {
+    if (confirm("Are you sure you want to permanently delete this character?")) {
+      try {
+        const res = await fetch(`${CHARACTER_API_URL}/delete/${id}`, { method: "DELETE" });
+        if (!res.ok) throw new Error('Failed to delete character');
+        alert('Character deleted successfully.');
+        window.location.href = './characters.html'; // Redirect to the list page
+      } catch (error) {
+        console.error("Error deleting character:", error);
+        alert("Could not delete the character.");
+      }
+    }
+  }
+
+  // Initial load
+  document.addEventListener("DOMContentLoaded", loadCharacterProfile);
+</script>
+
+</body>
+</html>

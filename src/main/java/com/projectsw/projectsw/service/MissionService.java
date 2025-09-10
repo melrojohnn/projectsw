@@ -25,14 +25,15 @@ public class MissionService {
         MissionModel mission = new MissionModel();
         mission.setTitle(missionDTO.getTitle());
         mission.setDescription(missionDTO.getDescription());
-        mission.setRank(missionDTO.getRank()); // **CORRIGIDO:** Usa o método setRank
+        mission.setRank(missionDTO.getRank());
         mission.setStatus(MissionStatus.PENDING);
         MissionModel savedMission = missionRepository.save(mission);
         return toResponseDTO(savedMission);
     }
 
     public List<MissionResponseDTO> getAllMissions() {
-        return missionRepository.findAll()
+        // Use the new optimized method to prevent N+1 query problem
+        return missionRepository.findAllWithMembers()
                 .stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
@@ -49,7 +50,7 @@ public class MissionService {
         if (existingMission != null) {
             existingMission.setTitle(missionDTO.getTitle());
             existingMission.setDescription(missionDTO.getDescription());
-            existingMission.setRank(missionDTO.getRank()); // **CORRIGIDO:** Usa o método setRank
+            existingMission.setRank(missionDTO.getRank());
             MissionModel updatedMission = missionRepository.save(existingMission);
             return toResponseDTO(updatedMission);
         } else {
@@ -70,7 +71,7 @@ public class MissionService {
         dto.setTitle(mission.getTitle());
         dto.setDescription(mission.getDescription());
         dto.setStatus(mission.getStatus());
-        dto.setRank(mission.getRank()); // **CORRIGIDO:** Usa o método getRank
+        dto.setRank(mission.getRank());
         if (mission.getMembers() != null) {
             dto.setMembers(mission.getMembers().stream().map(character ->
                     new CharacterSummaryDTO(

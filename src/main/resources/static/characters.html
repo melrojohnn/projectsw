@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Star Wars Characters</title>
+  <style>
+    body { font-family: sans-serif; background-color: #121212; color: #cfd8dc; margin: 20px; }
+    h1 { color: #82b1ff; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.7); background: #263238; }
+    th, td { padding: 12px; border: 1px solid #455a64; text-align: left; }
+    thead { background-color: #1a237e; color: #bbdefb; }
+    tbody tr:hover { background-color: #455a64; }
+    img { max-width: 60px; height: auto; border-radius: 4px; }
+    a { color: #82b1ff; text-decoration: none; font-weight: bold; }
+    a:hover { text-decoration: underline; }
+    .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .search-form input { padding: 8px; border-radius: 4px; border: 1px solid #406aeb; background-color: #263238; color: #eceff1; }
+    .create-btn { padding: 10px 20px; background-color: #0d47a1; color: #bbdefb; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .create-btn:hover { background-color: #2962ff; }
+  </style>
+</head>
+<body>
+
+  <h1>Star Wars Characters</h1>
+
+  <div class="controls">
+    <form id="search-form">
+      <input type="text" id="search-input" placeholder="Search by name...">
+    </form>
+    <a href="./character-form.html" class="create-btn">+ Create New Character</a>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Faction</th>
+        <th>Rank</th>
+        <th>Mission</th>
+      </tr>
+    </thead>
+    <tbody id="characters-table-body">
+      <!-- Character rows will be injected here by JavaScript -->
+    </tbody>
+  </table>
+
+<script>
+  const API_URL = "http://localhost:8181/character";
+  const tableBody = document.getElementById("characters-table-body");
+  const searchInput = document.getElementById("search-input");
+  let allCharacters = []; // Cache for the full list of characters
+
+  // Function to render the table with a given list of characters
+  function renderTable(characters) {
+    tableBody.innerHTML = "";
+    if (characters.length === 0) {
+      tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No characters found.</td></tr>';
+      return;
+    }
+    characters.forEach(char => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><img src="${char.imageUrl || 'https://via.placeholder.com/60'}" alt="Image of ${char.name}"/></td>
+        <td><a href="./character-profile.html?id=${char.id}">${char.name}</a></td>
+        <td>${char.faction || 'N/A'}</td>
+        <td>${char.rank || 'N/A'}</td>
+        <td>${char.mission ? char.mission.title : 'N/A'}</td>
+      `;
+      tableBody.appendChild(tr);
+    });
+  }
+
+  // Function to fetch all characters from the API
+  async function loadCharacters() {
+    try {
+      const res = await fetch(`${API_URL}/all`);
+      if (!res.ok) throw new Error('Failed to load characters');
+      allCharacters = await res.json();
+      renderTable(allCharacters);
+    } catch (error) {
+      console.error("Error loading characters:", error);
+      tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color: #ff8a80;">Could not load character data.</td></tr>';
+    }
+  }
+
+  // Event listener for the search input
+  searchInput.addEventListener("input", (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    const filteredCharacters = allCharacters.filter(char => 
+      char.name.toLowerCase().includes(searchTerm)
+    );
+    renderTable(filteredCharacters);
+  });
+
+  // Initial load
+  document.addEventListener("DOMContentLoaded", loadCharacters);
+</script>
+
+</body>
+</html>

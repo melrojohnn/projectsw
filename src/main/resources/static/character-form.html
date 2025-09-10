@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Character Form</title>
+  <style>
+    body { font-family: sans-serif; background-color: #121212; color: #cfd8dc; margin: 20px; }
+    h1 { color: #82b1ff; }
+    .form-container { padding: 25px 30px; border: 1px solid #455a64; border-radius: 8px; background: #37474f; max-width: 700px; margin: auto; }
+    form > div { display: flex; align-items: center; margin-bottom: 15px; }
+    form > div > label { width: 120px; font-weight: 600; margin-right: 15px; flex-shrink: 0; color: #bbdefb; text-align: right; }
+    form > div > input, form > div > select { flex-grow: 1; padding: 8px; border-radius: 4px; border: 1px solid #406aeb; background-color: #263238; color: #eceff1; }
+    .form-actions { justify-content: flex-end; display: flex; margin-top: 20px; }
+    button { padding: 10px 20px; cursor: pointer; border-radius: 4px; border: none; font-weight: bold; }
+    .save-btn { background-color: #0d47a1; color: #bbdefb; }
+    .save-btn:hover { background-color: #2962ff; }
+    .back-link { display: inline-block; margin-bottom: 20px; color: #82b1ff; text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <a href="./characters.html" class="back-link">&larr; Back to Character List</a>
+  
+  <div class="form-container">
+    <h1 id="form-title">Create New Character</h1>
+    <form id="character-form">
+      <input type="hidden" id="char-id">
+      <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" required>
+      </div>
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" required>
+      </div>
+      <div>
+        <label for="age">Age:</label>
+        <input type="number" id="age" required>
+      </div>
+      <div>
+        <label for="faction">Faction:</label>
+        <select id="faction" required>
+          <option value="">Select Faction</option>
+          <option value="REBEL_ALLIANCE">REBEL_ALLIANCE</option>
+          <option value="GALACTIC_EMPIRE">GALACTIC_EMPIRE</option>
+          <option value="JEDI_ORDER">JEDI_ORDER</option>
+          <option value="SITH">SITH</option>
+          <option value="DROID_ARMY">DROID_ARMY</option>
+          <option value="UNAFFILIATED">UNAFFILIATED</option>
+        </select>
+      </div>
+      <div>
+        <label for="rank">Rank:</label>
+        <select id="rank" required>
+          <option value="">Select Rank</option>
+        </select>
+      </div>
+      <div>
+        <label for="homeland">Homeland:</label>
+        <input type="text" id="homeland">
+      </div>
+      <div>
+        <label for="imageUrl">Image URL:</label>
+        <input type="url" id="imageUrl">
+      </div>
+      <div>
+        <label for="mission">Mission:</label>
+        <select id="mission">
+          <option value="">No Mission</option>
+        </select>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="save-btn">Save Character</button>
+      </div>
+    </form>
+  </div>
+
+<script>
+  const CHARACTER_API_URL = "http://localhost:8181/character";
+  const MISSION_API_URL = "http://localhost:8181/mission";
+
+  const ranksByFaction = {
+      REBEL_ALLIANCE: ["RECRUIT","PRIVATE","SERGEANT","LIEUTENANT","CAPTAIN","COMMANDER","GENERAL"],
+      GALACTIC_EMPIRE: ["CADET","TROOPER","CAPTAIN","COMMANDER","MOFF","GRAND_MOFF"],
+      JEDI_ORDER: ["PADAWAN","KNIGHT","MASTER","GRAND_MASTER"],
+      SITH: ["ACOLYTE","SITH_APPRENTICE","SITH_LORD","DARTH"],
+      DROID_ARMY: ["PROTOCOL_DROID","ASTROMECH_DROID","BATTLE_DROID","ASSASSIN_DROID"],
+      UNAFFILIATED: ["BOUNTY_HUNTER", "MANDALORIAN", "SMUGGLER", "MERCENARY", "PIRATE", "SCOUT"]
+  };
+
+  // Elements
+  const form = document.getElementById("character-form");
+  const formTitle = document.getElementById("form-title");
+  const charIdInput = document.getElementById("char-id");
+  const factionSelect = document.getElementById("faction");
+  const rankSelect = document.getElementById("rank");
+  const missionSelect = document.getElementById("mission");
+
+  // Load missions into dropdown
+  async function loadMissions() {
+    const res = await fetch(`${MISSION_API_URL}/all`);
+    const missions = await res.json();
+    missions.forEach(mission => {
+      const opt = document.createElement("option");
+      opt.value = mission.id;
+      opt.textContent = mission.title;
+      missionSelect.appendChild(opt);
+    });
+  }
+
+  // Populate ranks based on faction
+  factionSelect.addEventListener("change", () => {
+    const faction = factionSelect.value;
+    rankSelect.innerHTML = '<option value="">Select Rank</option>';
+    if (ranksByFaction[faction]) {
+      ranksByFaction[faction].forEach(rank => {
+        const opt = document.createElement("option");
+        opt.value = rank;
+        opt.textContent = rank;
+        rankSelect.appendChild(opt);
+      });
+    }
+  });
+
+  // Check for an ID in the URL to determine if we are in "edit" mode
+  async function checkForEditMode() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    if (id) {
+      formTitle.textContent = "Edit Character";
+      try {
+        const res = await fetch(`${CHARACTER_API_URL}/list/${id}`);
+        if (!res.ok) throw new Error('Character not found');
+        const char = await res.json();
+        
+        // Populate the form with the character's data
+        charIdInput.value = char.id;
+        document.getElementById("name").value = char.name;
+        document.getElementById("email").value = char.email;
+        document.getElementById("age").value = char.age;
+        document.getElementById("homeland").value = char.homeland || "";
+        document.getElementById("imageUrl").value = char.imageUrl || "";
+        factionSelect.value = char.faction;
+        await factionSelect.dispatchEvent(new Event("change")); // Wait for ranks to populate
+        rankSelect.value = char.rank;
+        missionSelect.value = char.mission ? char.mission.id : "";
+      } catch (error) {
+        console.error("Failed to load character for editing:", error);
+        alert("Could not find character to edit. Redirecting to list.");
+        window.location.href = './characters.html';
+      }
+    }
+  }
+
+  // Handle form submission
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const payload = {
+      name: document.getElementById("name").value,
+      email: document.getElementById("email").value,
+      age: Number(document.getElementById("age").value),
+      faction: factionSelect.value || null,
+      rank: rankSelect.value || null,
+      homeland: document.getElementById("homeland").value || null,
+      imageUrl: document.getElementById("imageUrl").value || null,
+      missionId: missionSelect.value || null
+    };
+
+    const charId = charIdInput.value;
+    const url = charId ? `${CHARACTER_API_URL}/update/${charId}` : `${CHARACTER_API_URL}/create`;
+    const method = charId ? "PUT" : "POST";
+
+    try {
+      const res = await fetch(url, {
+        method: method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ message: res.statusText }));
+        throw new Error(errorData.message || 'An unknown error occurred.');
+      }
+      
+      // On success, redirect back to the character list
+      window.location.href = './characters.html';
+
+    } catch (error) {
+      console.error('Save operation failed:', error);
+      alert(`Error saving character: ${error.message}`);
+    }
+  });
+
+  // Initial page load
+  async function init() {
+    await loadMissions();
+    await checkForEditMode();
+  }
+
+  init();
+</script>
+
+</body>
+</html>
