@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -24,12 +26,22 @@ public class MissionController {
     /**
      * Endpoint to create a new mission.
      * @param missionDTO The mission data sent in the request body.
-     * @return The newly created mission data as a DTO.
+     * @return A clear response with the created mission's summary.
      */
     @PostMapping("/create")
-    public ResponseEntity<MissionResponseDTO> createMission(@RequestBody MissionCreateDTO missionDTO) {
+    public ResponseEntity<Map<String, Object>> createMission(@RequestBody MissionCreateDTO missionDTO) {
         MissionResponseDTO createdMission = missionService.createMission(missionDTO);
-        return ResponseEntity.ok(createdMission);
+
+        // Build a custom response map
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Mission created successfully.");
+
+        Map<String, Object> missionData = new LinkedHashMap<>();
+        missionData.put("id", createdMission.getId());
+        missionData.put("title", createdMission.getTitle());
+        response.put("data", missionData);
+
+        return ResponseEntity.status(201).body(response);
     }
 
     /**
@@ -61,30 +73,45 @@ public class MissionController {
      * Endpoint to update an existing mission by its public ID.
      * @param id The public UUID of the mission to update.
      * @param missionDTO The new mission data from the request body.
-     * @return A ResponseEntity containing the updated mission DTO, or 404 Not Found.
+     * @return A clear response with the updated mission's summary.
      */
     @PutMapping("/update/{id}")
-    public ResponseEntity<MissionResponseDTO> updateMissionByID(@PathVariable UUID id, @RequestBody MissionCreateDTO missionDTO){
+    public ResponseEntity<Map<String, Object>> updateMissionByID(@PathVariable UUID id, @RequestBody MissionCreateDTO missionDTO){
         MissionResponseDTO updatedMission = missionService.updateMission(id, missionDTO);
-        if (updatedMission != null) {
-            return ResponseEntity.ok(updatedMission);
-        } else {
+
+        if (updatedMission == null) {
             return ResponseEntity.notFound().build();
         }
+
+        // Build a custom response map
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("message", "Mission updated successfully.");
+
+        Map<String, Object> missionData = new LinkedHashMap<>();
+        missionData.put("id", updatedMission.getId());
+        missionData.put("title", updatedMission.getTitle());
+        response.put("data", missionData);
+
+        return ResponseEntity.ok(response);
     }
 
     /**
      * Endpoint to delete a mission by its public ID.
      * @param id The public UUID of the mission to delete.
-     * @return A ResponseEntity with a success message or 404 Not Found.
+     * @return A clear success message or 404 Not Found.
      */
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteMissionByID(@PathVariable UUID id){
+    public ResponseEntity<Map<String, String>> deleteMissionByID(@PathVariable UUID id){
         boolean isDeleted = missionService.deleteMission(id);
-        if (isDeleted) {
-            return ResponseEntity.ok("Mission with ID " + id + " deleted successfully.");
-        } else {
+
+        if (!isDeleted) {
             return ResponseEntity.notFound().build();
         }
+
+        // Build a custom response map
+        Map<String, String> response = new LinkedHashMap<>();
+        response.put("message", "Mission with ID " + id + " deleted successfully.");
+
+        return ResponseEntity.ok(response);
     }
 }

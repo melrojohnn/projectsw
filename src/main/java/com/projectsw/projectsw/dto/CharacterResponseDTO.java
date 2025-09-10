@@ -20,5 +20,6 @@ public class CharacterResponseDTO {
     private Faction faction;
     private String rank;
     private String homeland;
+    private String imageUrl;
     private MissionSummaryDTO mission;
 }

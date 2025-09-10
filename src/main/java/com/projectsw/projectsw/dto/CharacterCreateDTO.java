@@ -19,5 +19,6 @@ public class CharacterCreateDTO {
     private Faction faction;
     private String rank;
     private String homeland;
+    private String imageUrl;
     private UUID missionId; // ID of the mission to assign the character to
 }

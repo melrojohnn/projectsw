@@ -85,10 +85,25 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-maven-plugin</artifactId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<version>11.7.2</version> <!-- Use a version consistent with your dependency -->
+				<configuration>
+					<!-- The plugin will load its configuration from this file -->
+					<configFile>flyway.properties</configFile>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

@@ -19,16 +19,15 @@ import java.util.stream.Collectors;
 public class CharacterService {
 
     private final CharacterRepository characterRepository;
-    private final MissionRepository missionRepository; // Dependency for finding missions
+    private final MissionRepository missionRepository;
 
-    // Updated constructor to inject both repositories
     public CharacterService(CharacterRepository characterRepository, MissionRepository missionRepository) {
         this.characterRepository = characterRepository;
         this.missionRepository = missionRepository;
     }
 
     public List<CharacterResponseDTO> getAllCharacters() {
-        return characterRepository.findAll()
+        return characterRepository.findAllWithMission()
                 .stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
@@ -44,8 +43,8 @@ public class CharacterService {
         character.setFaction(characterDTO.getFaction());
         character.setRank(characterDTO.getRank().toUpperCase());
         character.setHomeland(characterDTO.getHomeland());
+        character.setImageUrl(characterDTO.getImageUrl());
 
-        // ** New Logic: Assign Mission if ID is provided **
         if (characterDTO.getMissionId() != null) {
             MissionModel mission = missionRepository.findByPublicId(characterDTO.getMissionId())
                     .orElseThrow(() -> new EntityNotFoundException("Mission not found with ID: " + characterDTO.getMissionId()));
@@ -68,14 +67,14 @@ public class CharacterService {
         existingCharacter.setFaction(characterDTO.getFaction());
         existingCharacter.setRank(characterDTO.getRank().toUpperCase());
         existingCharacter.setHomeland(characterDTO.getHomeland());
+        existingCharacter.setImageUrl(characterDTO.getImageUrl());
 
-        // ** New Logic: Update Mission if ID is provided **
         if (characterDTO.getMissionId() != null) {
             MissionModel mission = missionRepository.findByPublicId(characterDTO.getMissionId())
                     .orElseThrow(() -> new EntityNotFoundException("Mission not found with ID: " + characterDTO.getMissionId()));
             existingCharacter.setMission(mission);
         } else {
-            existingCharacter.setMission(null); // Allow un-assigning a mission
+            existingCharacter.setMission(null);
         }
 
         CharacterModel updatedCharacter = characterRepository.save(existingCharacter);
@@ -104,6 +103,7 @@ public class CharacterService {
         dto.setFaction(character.getFaction());
         dto.setRank(character.getRank());
         dto.setHomeland(character.getHomeland());
+        dto.setImageUrl(character.getImageUrl());
 
         if (character.getMission() != null) {
             MissionSummaryDTO missionDTO = new MissionSummaryDTO(
@@ -141,6 +141,7 @@ public class CharacterService {
                     DroidRank.valueOf(upperRank);
                     break;
                 case UNAFFILIATED:
+                    Unaffiliated.valueOf(upperRank); // Validate against the Unaffiliated enum
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown faction provided: " + faction);
