@@ -42,18 +42,14 @@
         <label for="faction">Faction:</label>
         <select id="faction" required>
           <option value="">Select Faction</option>
-          <option value="REBEL_ALLIANCE">REBEL_ALLIANCE</option>
-          <option value="GALACTIC_EMPIRE">GALACTIC_EMPIRE</option>
-          <option value="JEDI_ORDER">JEDI_ORDER</option>
-          <option value="SITH">SITH</option>
-          <option value="DROID_ARMY">DROID_ARMY</option>
-          <option value="UNAFFILIATED">UNAFFILIATED</option>
+          <!-- Factions will be dynamically populated -->
         </select>
       </div>
       <div>
         <label for="rank">Rank:</label>
         <select id="rank" required>
           <option value="">Select Rank</option>
+          <!-- Ranks will be dynamically populated -->
         </select>
       </div>
       <div>
@@ -68,6 +64,7 @@
         <label for="mission">Mission:</label>
         <select id="mission">
           <option value="">No Mission</option>
+          <!-- Missions will be dynamically populated -->
         </select>
       </div>
       <div class="form-actions">
@@ -79,15 +76,10 @@
 <script>
   const CHARACTER_API_URL = "http://localhost:8181/character";
   const MISSION_API_URL = "http://localhost:8181/mission";
+  const DATA_API_URL = "http://localhost:8181/api/data";
 
-  const ranksByFaction = {
-      REBEL_ALLIANCE: ["RECRUIT","PRIVATE","SERGEANT","LIEUTENANT","CAPTAIN","COMMANDER","GENERAL"],
-      GALACTIC_EMPIRE: ["CADET","TROOPER","CAPTAIN","COMMANDER","MOFF","GRAND_MOFF"],
-      JEDI_ORDER: ["PADAWAN","KNIGHT","MASTER","GRAND_MASTER"],
-      SITH: ["ACOLYTE","SITH_APPRENTICE","SITH_LORD","DARTH"],
-      DROID_ARMY: ["PROTOCOL_DROID","ASTROMECH_DROID","BATTLE_DROID","ASSASSIN_DROID"],
-      UNAFFILIATED: ["BOUNTY_HUNTER", "MANDALORIAN", "SMUGGLER", "MERCENARY", "PIRATE", "SCOUT"]
-  };
+  // Global cache for form options data
+  let formOptions = {};
 
   // Elements
   const form = document.getElementById("character-form");
@@ -97,31 +89,65 @@
   const rankSelect = document.getElementById("rank");
   const missionSelect = document.getElementById("mission");
 
-  // Load missions into dropdown
-  async function loadMissions() {
-    const res = await fetch(`${MISSION_API_URL}/all`);
-    const missions = await res.json();
-    missions.forEach(mission => {
+  // --- DATA LOADING AND POPULATION ---
+
+  // Fetches all data needed for the form from the backend
+  async function loadFormOptions() {
+    try {
+      const res = await fetch(`${DATA_API_URL}/form-options`);
+      if (!res.ok) throw new Error('Failed to load form data');
+      formOptions = await res.json();
+      populateFactionSelect();
+    } catch (error) {
+      console.error("Error loading form options:", error);
+      alert("Could not load necessary data for the form. Please try again later.");
+    }
+  }
+
+  // Populates the Faction dropdown from the fetched data
+  function populateFactionSelect() {
+    if (!formOptions.factions) return;
+    formOptions.factions.forEach(faction => {
       const opt = document.createElement("option");
-      opt.value = mission.id;
-      opt.textContent = mission.title;
-      missionSelect.appendChild(opt);
+      opt.value = faction.key; // e.g., REBEL_ALLIANCE
+      opt.textContent = faction.displayName; // e.g., Rebel Alliance
+      opt.title = faction.description; // Tooltip with description
+      factionSelect.appendChild(opt);
     });
   }
 
-  // Populate ranks based on faction
+  // Populates the Rank dropdown based on the selected faction
   factionSelect.addEventListener("change", () => {
-    const faction = factionSelect.value;
+    const selectedFactionKey = factionSelect.value;
     rankSelect.innerHTML = '<option value="">Select Rank</option>';
-    if (ranksByFaction[faction]) {
-      ranksByFaction[faction].forEach(rank => {
+    if (formOptions.ranksByFaction && formOptions.ranksByFaction[selectedFactionKey]) {
+      formOptions.ranksByFaction[selectedFactionKey].forEach(rank => {
         const opt = document.createElement("option");
-        opt.value = rank;
-        opt.textContent = rank;
+        opt.value = rank.key;
+        opt.textContent = rank.displayName;
+        opt.title = rank.description;
         rankSelect.appendChild(opt);
       });
     }
   });
+
+  // Load missions into the mission dropdown
+  async function loadMissions() {
+    try {
+      const res = await fetch(`${MISSION_API_URL}/all`);
+      const missions = await res.json();
+      missions.forEach(mission => {
+        const opt = document.createElement("option");
+        opt.value = mission.id;
+        opt.textContent = mission.title;
+        missionSelect.appendChild(opt);
+      });
+    } catch (error) {
+      console.error("Error loading missions:", error);
+    }
+  }
+
+  // --- FORM LOGIC ---
 
   // Check for an ID in the URL to determine if we are in "edit" mode
   async function checkForEditMode() {
@@ -141,9 +167,12 @@
         document.getElementById("age").value = char.age;
         document.getElementById("homeland").value = char.homeland || "";
         document.getElementById("imageUrl").value = char.imageUrl || "";
+        
+        // Set faction, wait for ranks to populate, then set rank
         factionSelect.value = char.faction;
-        await factionSelect.dispatchEvent(new Event("change")); // Wait for ranks to populate
+        await factionSelect.dispatchEvent(new Event("change")); 
         rankSelect.value = char.rank;
+        
         missionSelect.value = char.mission ? char.mission.id : "";
       } catch (error) {
         console.error("Failed to load character for editing:", error);
@@ -183,7 +212,6 @@
         throw new Error(errorData.message || 'An unknown error occurred.');
       }
       
-      // On success, redirect back to the character list
       window.location.href = './characters.html';
 
     } catch (error) {
@@ -192,9 +220,12 @@
     }
   });
 
-  // Initial page load
+  // --- PAGE INITIALIZATION ---
   async function init() {
-    await loadMissions();
+    await Promise.all([
+      loadFormOptions(),
+      loadMissions()
+    ]);
     await checkForEditMode();
   }
 

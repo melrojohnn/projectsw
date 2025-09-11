@@ -1,0 +1,492 @@
+
+[
+  {
+    "id": "20000000-0000-0000-0000-000000000015",
+    "name": "Orson Krennic",
+    "email": "krennic@empire.gov",
+    "age": 51,
+    "faction": "GALACTIC_EMPIRE",
+    "rank": "COMMANDER",
+    "homeland": "Lexrul",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/0/05/OrsonKrennic-SWI171.png",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000001",
+      "title": "Steal Death Star Plans",
+      "description": "Infiltrate the Empire base on Scarif to steal the plans for the Death Star.",
+      "status": "IN_PROGRESS"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000013",
+    "name": "Wilhuff Tarkin",
+    "email": "tarkin@empire.gov",
+    "age": 64,
+    "faction": "GALACTIC_EMPIRE",
+    "rank": "GRAND_MOFF",
+    "homeland": "Eriadu",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/c/c1/Tarkininfobox.jpg",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000001",
+      "title": "Steal Death Star Plans",
+      "description": "Infiltrate the Empire base on Scarif to steal the plans for the Death Star.",
+      "status": "IN_PROGRESS"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000012",
+    "name": "Cassian Andor",
+    "email": "cassian@rebellion.org",
+    "age": 26,
+    "faction": "REBEL_ALLIANCE",
+    "rank": "CAPTAIN",
+    "homeland": "Fest",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/3/31/CassianAndor-Fathead.png",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000001",
+      "title": "Steal Death Star Plans",
+      "description": "Infiltrate the Empire base on Scarif to steal the plans for the Death Star.",
+      "status": "IN_PROGRESS"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000003",
+    "name": "Jyn Erso",
+    "email": "jyn@rebellion.org",
+    "age": 21,
+    "faction": "REBEL_ALLIANCE",
+    "rank": "SERGEANT",
+    "homeland": "Vallt",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/b/b3/JynErsoPromo.png",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000001",
+      "title": "Steal Death Star Plans",
+      "description": "Infiltrate the Empire base on Scarif to steal the plans for the Death Star.",
+      "status": "IN_PROGRESS"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000006",
+    "name": "C-3PO",
+    "email": "c3po@droids.bot",
+    "age": 66,
+    "faction": "DROID_ARMY",
+    "rank": "PROTOCOL_DROID",
+    "homeland": "Tatooine",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/3/3f/C-3PO_TLJ_Card_Trader_Award_Card.png",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000002",
+      "title": "Rescue Princess Leia",
+      "description": "Rescue Princess Leia from the Death Star detention block AA-23.",
+      "status": "IN_PROGRESS"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000002",
+    "name": "Leia Organa",
+    "email": "leia@rebellion.org",
+    "age": 19,
+    "faction": "REBEL_ALLIANCE",
+    "rank": "GENERAL",
+    "homeland": "Alderaan",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/9/9b/Princessleiaheadwithgun.jpg",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000002",
+      "title": "Rescue Princess Leia",
+      "description": "Rescue Princess Leia from the Death Star detention block AA-23.",
+      "status": "IN_PROGRESS"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000001",
+    "name": "Luke Skywalker",
+    "email": "luke@rebellion.org",
+    "age": 19,
+    "faction": "REBEL_ALLIANCE",
+    "rank": "COMMANDER",
+    "homeland": "Tatooine",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/6/6c/LukeSkywalker-RotJAVA.png",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000002",
+      "title": "Rescue Princess Leia",
+      "description": "Rescue Princess Leia from the Death Star detention block AA-23.",
+      "status": "IN_PROGRESS"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000017",
+    "name": "Iden Versio",
+    "email": "iden.versio@empire.gov",
+    "age": 24,
+    "faction": "GALACTIC_EMPIRE",
+    "rank": "COMMANDER",
+    "homeland": "Vardos",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/1/15/Iden_Versio_BF2.png",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000004",
+      "title": "Battle of Hoth",
+      "description": "Defend the Echo Base from the Imperial AT-AT assault.",
+      "status": "FAILED"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000011",
+    "name": "Yoda",
+    "email": "yoda@jediorder.org",
+    "age": 900,
+    "faction": "JEDI_ORDER",
+    "rank": "GRAND_MASTER",
+    "homeland": "Unknown",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/d/d6/Yoda_SWSB.png",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000005",
+      "title": "Find Master Yoda",
+      "description": "Travel to the Dagobah system to find the exiled Jedi Master Yoda.",
+      "status": "PENDING"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000010",
+    "name": "Obi-Wan Kenobi",
+    "email": "obiwan@jediorder.org",
+    "age": 57,
+    "faction": "JEDI_ORDER",
+    "rank": "MASTER",
+    "homeland": "Stewjon",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/4/4e/ObiWanHS-SWE.jpg",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000005",
+      "title": "Find Master Yoda",
+      "description": "Travel to the Dagobah system to find the exiled Jedi Master Yoda.",
+      "status": "PENDING"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000008",
+    "name": "Han Solo",
+    "email": "han.solo@rebellion.org",
+    "age": 32,
+    "faction": "REBEL_ALLIANCE",
+    "rank": "CAPTAIN",
+    "homeland": "Corellia",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/e/e2/TFAHanSolo.png",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000006",
+      "title": "Infiltrate Jabba's Palace",
+      "description": "Rescue Han Solo from the clutches of Jabba the Hutt on Tatooine.",
+      "status": "IN_PROGRESS"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000028",
+    "name": "Wedge Antilles",
+    "email": "wedge@rebellion.org",
+    "age": 25,
+    "faction": "REBEL_ALLIANCE",
+    "rank": "COMMANDER",
+    "homeland": "Corellia",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/5/51/Wedge_Antilles.jpg",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000007",
+      "title": "Battle of Endor",
+      "description": "Lead the Rebel fleet in an assault on the second Death Star.",
+      "status": "PENDING"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000029",
+    "name": "Admiral Ackbar",
+    "email": "ackbar@rebellion.org",
+    "age": 60,
+    "faction": "REBEL_ALLIANCE",
+    "rank": "GENERAL",
+    "homeland": "Mon Cala",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/f/fb/Ackbar_HS.jpg",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000007",
+      "title": "Battle of Endor",
+      "description": "Lead the Rebel fleet in an assault on the second Death Star.",
+      "status": "PENDING"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000027",
+    "name": "Lando Calrissian",
+    "email": "lando@rebellion.org",
+    "age": 35,
+    "faction": "REBEL_ALLIANCE",
+    "rank": "GENERAL",
+    "homeland": "Socorro",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/8/8f/Lando_ROTJ.png",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000007",
+      "title": "Battle of Endor",
+      "description": "Lead the Rebel fleet in an assault on the second Death Star.",
+      "status": "PENDING"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000007",
+    "name": "Anakin Skywalker",
+    "email": "anakin@jedicouncil.net",
+    "age": 22,
+    "faction": "SITH",
+    "rank": "SITH_LORD",
+    "homeland": "Tatooine",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/6/6f/Anakin_Skywalker_RotS.png",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000007",
+      "title": "Battle of Endor",
+      "description": "Lead the Rebel fleet in an assault on the second Death Star.",
+      "status": "PENDING"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000021",
+    "name": "Padmé Amidala",
+    "email": "padme@republic.gov",
+    "age": 27,
+    "faction": "REBEL_ALLIANCE",
+    "rank": "GENERAL",
+    "homeland": "Naboo",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/b/b2/Padmegreenscrshot.jpg",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000008",
+      "title": "Negotiate with the Gungans",
+      "description": "Secure an alliance with the Gungan Grand Army on Naboo.",
+      "status": "COMPLETED"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000019",
+    "name": "Qui-Gon Jinn",
+    "email": "quigon@jediorder.org",
+    "age": 60,
+    "faction": "JEDI_ORDER",
+    "rank": "MASTER",
+    "homeland": "Coruscant",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/f/f6/Qui-Gon_Jinn_Headshot_TPM.jpg",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000008",
+      "title": "Negotiate with the Gungans",
+      "description": "Secure an alliance with the Gungan Grand Army on Naboo.",
+      "status": "COMPLETED"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000016",
+    "name": "Captain Phasma",
+    "email": "phasma@firstorder.io",
+    "age": 32,
+    "faction": "GALACTIC_EMPIRE",
+    "rank": "CAPTAIN",
+    "homeland": "Parnassos",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/0/02/Phasma.png",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000009",
+      "title": "Scout the Outer Rim",
+      "description": "Patrol the Outer Rim territories for signs of First Order activity.",
+      "status": "IN_PROGRESS"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000014",
+    "name": "Armitage Hux",
+    "email": "hux@firstorder.io",
+    "age": 34,
+    "faction": "GALACTIC_EMPIRE",
+    "rank": "COMMANDER",
+    "homeland": "Arkanis",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/d/d0/HuxTLJPromo.png",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000009",
+      "title": "Scout the Outer Rim",
+      "description": "Patrol the Outer Rim territories for signs of First Order activity.",
+      "status": "IN_PROGRESS"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000009",
+    "name": "Kylo Ren",
+    "email": "kylo@firstorder.io",
+    "age": 30,
+    "faction": "SITH",
+    "rank": "SITH_LORD",
+    "homeland": "Chandrila",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/b/bc/KyloRenVFcover-TROS.png",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000009",
+      "title": "Scout the Outer Rim",
+      "description": "Patrol the Outer Rim territories for signs of First Order activity.",
+      "status": "IN_PROGRESS"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000025",
+    "name": "Boba Fett",
+    "email": "boba.fett@bounty.net",
+    "age": 35,
+    "faction": "UNAFFILIATED",
+    "rank": "BOUNTY_HUNTER",
+    "homeland": "Kamino",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/6/62/BobaFettHS-SWI213.png",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000010",
+      "title": "Capture a Bounty Hunter",
+      "description": "Track and capture the notorious bounty hunter Boba Fett.",
+      "status": "PENDING"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000022",
+    "name": "Count Dooku",
+    "email": "dooku@sith.org",
+    "age": 83,
+    "faction": "SITH",
+    "rank": "SITH_LORD",
+    "homeland": "Serenno",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/b/b8/Dooku_Headshot.jpg",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000011",
+      "title": "Sabotage the Droid Factory",
+      "description": "Infiltrate Geonosis and sabotage the Separatist droid factory.",
+      "status": "COMPLETED"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000005",
+    "name": "R2-D2",
+    "email": "r2d2@droids.bot",
+    "age": 66,
+    "faction": "DROID_ARMY",
+    "rank": "ASTROMECH_DROID",
+    "homeland": "Naboo",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/e/eb/ArtooTFA2-Fathead.png",
+    "mission": {
+      "id": "10000000-0000-0000-0000-000000000012",
+      "title": "Deliver the R2 unit",
+      "description": "Deliver the astromech droid containing vital information to the Rebel Alliance.",
+      "status": "PENDING"
+    }
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000018",
+    "name": "Mace Windu",
+    "email": "windu@jediorder.org",
+    "age": 53,
+    "faction": "JEDI_ORDER",
+    "rank": "MASTER",
+    "homeland": "Haruun Kal",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/2/27/MaceWindu_-WoSW.png",
+    "mission": null
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000020",
+    "name": "Ahsoka Tano",
+    "email": "ahsoka@jediorder.org",
+    "age": 36,
+    "faction": "JEDI_ORDER",
+    "rank": "KNIGHT",
+    "homeland": "Shili",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/2/27/Ahsoka-Tano-AG-2023.png",
+    "mission": null
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000024",
+    "name": "Grand Admiral Thrawn",
+    "email": "thrawn@empire.gov",
+    "age": 45,
+    "faction": "GALACTIC_EMPIRE",
+    "rank": "GRAND_MOFF",
+    "homeland": "Csilla",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/f/fe/Thrawn_Character_poster.png",
+    "mission": null
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000023",
+    "name": "Asajj Ventress",
+    "email": "ventress@sith.org",
+    "age": 28,
+    "faction": "SITH",
+    "rank": "ACOLYTE",
+    "homeland": "Dathomir",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/a/af/AsajjVentress-LD-SWCT.png",
+    "mission": null
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000026",
+    "name": "Din Djarin",
+    "email": "mando@bounty.net",
+    "age": 38,
+    "faction": "UNAFFILIATED",
+    "rank": "MANDALORIAN",
+    "homeland": "Aq Vetina",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/8/8a/DinDjarinSansHelmet-TMCh16.png",
+    "mission": null
+  },
+  {
+    "id": "35caf665-cbc7-4e9a-b026-f67a219aa9ac",
+    "name": "Din Grogu",
+    "email": "grogu@resistance.org",
+    "age": 50,
+    "faction": "JEDI_ORDER",
+    "rank": "PADAWAN",
+    "homeland": "Coruscant",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/7/7c/AnnBembi-HelloFriend.png",
+    "mission": null
+  },
+  {
+    "id": "bbe4a31d-5c88-449d-b639-e43353eff74c",
+    "name": "Darth Sidious (Emperor Palpatine)",
+    "email": "emperor@empire.gov",
+    "age": 88,
+    "faction": "SITH",
+    "rank": "SITH_LORD",
+    "homeland": "Naboo",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/e/e2/Palpatine-CEUEEd.png",
+    "mission": null
+  },
+  {
+    "id": "2a028dd8-ff40-4783-8fc3-25cf3776ad76",
+    "name": "Mon Mothma",
+    "email": "mon@resistance.org",
+    "age": 41,
+    "faction": "REBEL_ALLIANCE",
+    "rank": "COMMANDER",
+    "homeland": "Chandrila",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/2/22/Mon_Mothma_Ahsoka_poster.png",
+    "mission": null
+  },
+  {
+    "id": "e64e9be2-24a9-4ad4-9602-92492d72978a",
+    "name": "Rey Skywalker",
+    "email": "rey@jedicouncil.net",
+    "age": 20,
+    "faction": "UNAFFILIATED",
+    "rank": "JEDI_ORDER_UNAFFILIATED",
+    "homeland": "Jakku",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/8/89/Rey_SWI168.png",
+    "mission": null
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000030",
+    "name": "Darth Maul",
+    "email": "maul@sith.org",
+    "age": 30,
+    "faction": "SITH",
+    "rank": "SITH_LORD",
+    "homeland": "Dathomir",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/5/50/Darth_Maul_profile.png",
+    "mission": null
+  },
+  {
+    "id": "20000000-0000-0000-0000-000000000004",
+    "name": "Darth Vader",
+    "email": "vader@empire.gov",
+    "age": 45,
+    "faction": "SITH",
+    "rank": "SITH_LORD",
+    "homeland": "Tatooine",
+    "imageUrl": "https://static.wikia.nocookie.net/starwars/images/9/94/Vaderrotj.jpg",
+    "mission": null
+  }
+]
