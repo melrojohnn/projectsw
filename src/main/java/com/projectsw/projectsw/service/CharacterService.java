@@ -140,8 +140,14 @@ public class CharacterService {
                 case DROID_ARMY:
                     DroidRank.valueOf(upperRank);
                     break;
+                case CRIMINAL_UNDERWORLD:
+                    CriminalUnderworldRank.valueOf(upperRank);
+                    break;
+                case GALACTIC_REPUBLIC:
+                    GalacticRepublicRank.valueOf(upperRank);
+                    break;
                 case UNAFFILIATED:
-                    Unaffiliated.valueOf(upperRank); // Validate against the Unaffiliated enum
+                    Unaffiliated.valueOf(upperRank);
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown faction provided: " + faction);

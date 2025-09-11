@@ -1,6 +1,5 @@
 package com.projectsw.projectsw.model;
 
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.projectsw.projectsw.enums.Faction;
 import jakarta.persistence.*;
@@ -26,24 +25,27 @@ public class CharacterModel {
     @Column(unique = true, nullable = false, updatable = false)
     private UUID publicId = UUID.randomUUID(); // Public-facing ID for APIs
 
+    @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     private int age;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Faction faction;
 
+    @Column(nullable = false)
     private String rank;
+
     private String homeland;
 
     @Column(length = 1024) // Allow for longer URLs
     private String imageUrl;
 
-
-    @ManyToOne(fetch = FetchType.EAGER) // ** Force eager loading to fix the issue **
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mission_id")
     @JsonBackReference
     private MissionModel mission;
