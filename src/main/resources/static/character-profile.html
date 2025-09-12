@@ -27,9 +27,12 @@
 </head>
 <body>
 
+  <!-- Navigation link to return to the main character list -->
   <a href="./characters.html" class="back-link">&larr; Back to Character List</a>
 
+  <!-- Main container for the profile, hidden by default until data is loaded -->
   <div class="container" id="profile-container" style="display:none;">
+    <!-- Header section with the character's image and name -->
     <div class="profile-header">
       <img id="char-image" src="" alt="Character Image">
       <div>
@@ -38,6 +41,7 @@
       </div>
     </div>
 
+    <!-- Grid for displaying core character details -->
     <div class="details-grid">
       <div class="detail-item">
         <strong>Email</strong>
@@ -53,8 +57,10 @@
       </div>
     </div>
 
+    <!-- Container for the assigned mission details -->
     <div id="mission-details"></div>
 
+    <!-- Action buttons for editing and deleting the character -->
     <div class="actions">
       <a href="#" id="edit-btn" class="btn edit-btn">Edit</a>
       <button id="delete-btn" class="btn delete-btn">Delete</button>
@@ -62,20 +68,32 @@
   </div>
 
 <script>
+  // --- CONFIGURATION & API ENDPOINTS ---
   const CHARACTER_API_URL = "http://localhost:8181/character";
+
+  // --- DOM ELEMENTS ---
   const profileContainer = document.getElementById("profile-container");
 
-  // Function to get the character ID from the URL
+  // --- FUNCTIONS ---
+
+  /**
+   * Retrieves the character's UUID from the URL query parameters (e.g., ?id=...).
+   * @returns {string|null} The character ID or null if not found.
+   */
   function getCharacterId() {
     const params = new URLSearchParams(window.location.search);
     return params.get('id');
   }
 
-  // Function to load and display character data
+  /**
+   * The main function to load and display the character profile.
+   * It fetches the character data from the API and populates the HTML elements.
+   */
   async function loadCharacterProfile() {
     const id = getCharacterId();
     if (!id) {
-      window.location.href = './characters.html'; // Redirect if no ID is present
+      // If no ID is found in the URL, redirect back to the list page as this page is invalid.
+      window.location.href = './characters.html';
       return;
     }
 
@@ -84,7 +102,7 @@
       if (!res.ok) throw new Error('Character not found');
       const char = await res.json();
 
-      // Populate the page with data
+      // Populate the page with the fetched character data
       document.getElementById("char-image").src = char.imageUrl || 'https://via.placeholder.com/150';
       document.getElementById("char-name").textContent = char.name;
       document.getElementById("char-faction-rank").textContent = `${char.faction} - ${char.rank}`;
@@ -92,7 +110,7 @@
       document.getElementById("char-age").textContent = char.age;
       document.getElementById("char-homeland").textContent = char.homeland || 'N/A';
 
-      // Populate mission details
+      // Dynamically build and display the mission details card
       const missionContainer = document.getElementById("mission-details");
       if (char.mission) {
         missionContainer.innerHTML = `
@@ -108,11 +126,13 @@
         missionContainer.innerHTML = '<div class="mission-card"><p>No mission assigned.</p></div>';
       }
 
-      // Set up action buttons
+      // Set up the action buttons
+      // The Edit button links to the form page, passing the character's ID.
       document.getElementById("edit-btn").href = `./character-form.html?id=${char.id}`;
+      // The Delete button is assigned an onclick event to trigger the delete function.
       document.getElementById("delete-btn").onclick = () => deleteCharacter(char.id);
 
-      // Show the profile container
+      // Finally, make the main profile container visible.
       profileContainer.style.display = 'block';
 
     } catch (error) {
@@ -122,14 +142,18 @@
     }
   }
 
-  // Function to delete a character
+  /**
+   * Handles the character deletion process.
+   * @param {string} id - The UUID of the character to delete.
+   */
   async function deleteCharacter(id) {
+    // Ask for user confirmation before proceeding with a destructive action.
     if (confirm("Are you sure you want to permanently delete this character?")) {
       try {
         const res = await fetch(`${CHARACTER_API_URL}/delete/${id}`, { method: "DELETE" });
         if (!res.ok) throw new Error('Failed to delete character');
         alert('Character deleted successfully.');
-        window.location.href = './characters.html'; // Redirect to the list page
+        window.location.href = './characters.html'; // Redirect to the list page after deletion
       } catch (error) {
         console.error("Error deleting character:", error);
         alert("Could not delete the character.");
@@ -137,7 +161,11 @@
     }
   }
 
-  // Initial load
+  // --- PAGE INITIALIZATION ---
+
+  /**
+   * The entry point for the script. Fires when the page's DOM is fully loaded.
+   */
   document.addEventListener("DOMContentLoaded", loadCharacterProfile);
 </script>
 

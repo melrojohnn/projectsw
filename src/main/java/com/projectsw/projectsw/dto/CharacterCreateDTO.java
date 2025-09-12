@@ -7,8 +7,8 @@ import lombok.Setter;
 import java.util.UUID;
 
 /**
- * DTO for receiving data to create a new character.
- * Contains only the fields a user should provide.
+ * Data Transfer Object for creating or updating a character.
+ * This class defines the structure of the data expected from the client in the request body.
  */
 @Getter
 @Setter
@@ -20,5 +20,5 @@ public class CharacterCreateDTO {
     private String rank;
     private String homeland;
     private String imageUrl;
-    private UUID missionId; // ID of the mission to assign the character to
+    private UUID missionId; // The public ID of the mission to assign to the character.
 }

@@ -12,15 +12,28 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Service class containing the business logic for mission management.
+ */
 @Service
 public class MissionService {
 
     private final MissionRepository missionRepository;
 
+    /**
+     * Constructs the MissionService with the necessary repository dependency.
+     * @param missionRepository The repository for mission data access.
+     */
     public MissionService(MissionRepository missionRepository) {
         this.missionRepository = missionRepository;
     }
 
+    /**
+     * Creates a new mission based on the provided DTO.
+     * New missions are always created with a PENDING status.
+     * @param missionDTO The DTO containing the new mission's data.
+     * @return The DTO of the newly created mission.
+     */
     public MissionResponseDTO createMission(MissionCreateDTO missionDTO) {
         MissionModel mission = new MissionModel();
         mission.setTitle(missionDTO.getTitle());
@@ -31,20 +44,35 @@ public class MissionService {
         return toResponseDTO(savedMission);
     }
 
+    /**
+     * Retrieves all missions from the database.
+     * Uses an optimized query to fetch associated members eagerly to prevent N+1 issues.
+     * @return A list of MissionResponseDTOs.
+     */
     public List<MissionResponseDTO> getAllMissions() {
-        // Use the new optimized method to prevent N+1 query problem
         return missionRepository.findAllWithMembers()
                 .stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves a single mission by its public UUID.
+     * @param publicId The public UUID of the mission.
+     * @return An Optional containing the MissionResponseDTO if found, otherwise empty.
+     */
     public MissionResponseDTO getMissionByPublicId(UUID publicId) {
         return missionRepository.findByPublicId(publicId)
                 .map(this::toResponseDTO)
                 .orElse(null);
     }
 
+    /**
+     * Updates an existing mission with new data.
+     * @param publicId The public UUID of the mission to update.
+     * @param missionDTO The DTO containing the updated data.
+     * @return The DTO of the updated mission, or null if the mission was not found.
+     */
     public MissionResponseDTO updateMission(UUID publicId, MissionCreateDTO missionDTO) {
         MissionModel existingMission = missionRepository.findByPublicId(publicId).orElse(null);
         if (existingMission != null) {
@@ -58,6 +86,11 @@ public class MissionService {
         }
     }
 
+    /**
+     * Deletes a mission from the database.
+     * @param publicId The public UUID of the mission to delete.
+     * @return true if the mission was found and deleted, false otherwise.
+     */
     public boolean deleteMission(UUID publicId) {
         return missionRepository.findByPublicId(publicId).map(mission -> {
             missionRepository.delete(mission);
@@ -65,6 +98,12 @@ public class MissionService {
         }).orElse(false);
     }
 
+    /**
+     * Private helper method to convert a MissionModel entity to a MissionResponseDTO.
+     * This also maps the list of assigned characters to a summary DTO.
+     * @param mission The MissionModel entity.
+     * @return The mapped MissionResponseDTO.
+     */
     private MissionResponseDTO toResponseDTO(MissionModel mission) {
         MissionResponseDTO dto = new MissionResponseDTO();
         dto.setId(mission.getPublicId());

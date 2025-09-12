@@ -9,15 +9,16 @@ import lombok.Setter;
 import java.util.UUID;
 
 /**
- * A simplified DTO representing a summary of a mission.
- * Used to avoid circular dependencies in other DTOs.
+ * A simplified Data Transfer Object representing a summary of a mission.
+ * This is typically used for nested representations, such as showing the assigned mission
+ * within a character's details, to provide essential information without causing circular serialization issues.
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class MissionSummaryDTO {
-    private UUID id; // This will be the publicId
+    private UUID id; // The public UUID of the mission.
     private String title;
     private String description;
     private MissionStatus status;

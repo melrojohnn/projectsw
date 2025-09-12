@@ -7,6 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Repository interface for accessing and managing UserModel data in the database.
+ * This is the data access layer for application users.
+ */
 @Repository
 public interface UserRepository extends JpaRepository<UserModel, UUID> {
 

@@ -20,12 +20,18 @@
 </head>
 <body>
 
+  <!-- Navigation link to return to the main character list -->
   <a href="./characters.html" class="back-link">&larr; Back to Character List</a>
   
   <div class="form-container">
+    <!-- The title of the form, which will be dynamically changed to "Create" or "Edit" -->
     <h1 id="form-title">Create New Character</h1>
+    
+    <!-- The main form for character data -->
     <form id="character-form">
+      <!-- A hidden input to store the character's ID when in edit mode -->
       <input type="hidden" id="char-id">
+      
       <div>
         <label for="name">Name:</label>
         <input type="text" id="name" required>
@@ -42,14 +48,14 @@
         <label for="faction">Faction:</label>
         <select id="faction" required>
           <option value="">Select Faction</option>
-          <!-- Factions will be dynamically populated -->
+          <!-- Faction options are dynamically populated from the API -->
         </select>
       </div>
       <div>
         <label for="rank">Rank:</label>
         <select id="rank" required>
           <option value="">Select Rank</option>
-          <!-- Ranks will be dynamically populated -->
+          <!-- Rank options are dynamically populated based on the selected faction -->
         </select>
       </div>
       <div>
@@ -64,9 +70,11 @@
         <label for="mission">Mission:</label>
         <select id="mission">
           <option value="">No Mission</option>
-          <!-- Missions will be dynamically populated -->
+          <!-- Mission options are dynamically populated from the API -->
         </select>
       </div>
+      
+      <!-- Form action buttons -->
       <div class="form-actions">
         <button type="submit" class="save-btn">Save Character</button>
       </div>
@@ -74,14 +82,17 @@
   </div>
 
 <script>
+  // --- CONFIGURATION & API ENDPOINTS ---
   const CHARACTER_API_URL = "http://localhost:8181/character";
   const MISSION_API_URL = "http://localhost:8181/mission";
   const DATA_API_URL = "http://localhost:8181/api/data";
 
-  // Global cache for form options data
+  // --- STATE CACHE ---
+  // This object will store all the dynamic options fetched from the backend (factions, ranks, etc.).
+  // This prevents multiple API calls and makes the frontend more efficient.
   let formOptions = {};
 
-  // Elements
+  // --- DOM ELEMENTS ---
   const form = document.getElementById("character-form");
   const formTitle = document.getElementById("form-title");
   const charIdInput = document.getElementById("char-id");
@@ -91,7 +102,10 @@
 
   // --- DATA LOADING AND POPULATION ---
 
-  // Fetches all data needed for the form from the backend
+  /**
+   * Fetches all static data needed for the form from our custom data endpoint.
+   * This includes factions and the map of ranks for each faction.
+   */
   async function loadFormOptions() {
     try {
       const res = await fetch(`${DATA_API_URL}/form-options`);
@@ -104,22 +118,29 @@
     }
   }
 
-  // Populates the Faction dropdown from the fetched data
+  /**
+   * Populates the Faction dropdown using the data fetched from the API.
+   * It sets the display name as the text and the enum key as the value.
+   * It also adds the description as a tooltip.
+   */
   function populateFactionSelect() {
     if (!formOptions.factions) return;
     formOptions.factions.forEach(faction => {
       const opt = document.createElement("option");
-      opt.value = faction.key; // e.g., REBEL_ALLIANCE
-      opt.textContent = faction.displayName; // e.g., Rebel Alliance
-      opt.title = faction.description; // Tooltip with description
+      opt.value = faction.key; // e.g., "REBEL_ALLIANCE"
+      opt.textContent = faction.displayName; // e.g., "Rebel Alliance"
+      opt.title = faction.description; // Tooltip with the full description
       factionSelect.appendChild(opt);
     });
   }
 
-  // Populates the Rank dropdown based on the selected faction
+  /**
+   * Populates the Rank dropdown based on the currently selected faction.
+   * This function is triggered by the 'change' event on the faction dropdown.
+   */
   factionSelect.addEventListener("change", () => {
     const selectedFactionKey = factionSelect.value;
-    rankSelect.innerHTML = '<option value="">Select Rank</option>';
+    rankSelect.innerHTML = '<option value="">Select Rank</option>'; // Clear previous options
     if (formOptions.ranksByFaction && formOptions.ranksByFaction[selectedFactionKey]) {
       formOptions.ranksByFaction[selectedFactionKey].forEach(rank => {
         const opt = document.createElement("option");
@@ -131,7 +152,9 @@
     }
   });
 
-  // Load missions into the mission dropdown
+  /**
+   * Fetches the list of all available missions to populate the mission dropdown.
+   */
   async function loadMissions() {
     try {
       const res = await fetch(`${MISSION_API_URL}/all`);
@@ -149,7 +172,10 @@
 
   // --- FORM LOGIC ---
 
-  // Check for an ID in the URL to determine if we are in "edit" mode
+  /**
+   * Checks the URL for an 'id' parameter to determine if the form should be in "edit" mode.
+   * If an ID is found, it fetches the character's data and populates the form fields.
+   */
   async function checkForEditMode() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
@@ -168,9 +194,9 @@
         document.getElementById("homeland").value = char.homeland || "";
         document.getElementById("imageUrl").value = char.imageUrl || "";
         
-        // Set faction, wait for ranks to populate, then set rank
+        // Set faction, programmatically trigger the 'change' event to populate ranks, then set the correct rank.
         factionSelect.value = char.faction;
-        await factionSelect.dispatchEvent(new Event("change")); 
+        factionSelect.dispatchEvent(new Event("change")); 
         rankSelect.value = char.rank;
         
         missionSelect.value = char.mission ? char.mission.id : "";
@@ -182,9 +208,13 @@
     }
   }
 
-  // Handle form submission
+  /**
+   * Handles the form submission for both creating and updating a character.
+   */
   form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent the default browser form submission
+
+    // Build the payload object from the form fields
     const payload = {
       name: document.getElementById("name").value,
       email: document.getElementById("email").value,
@@ -212,6 +242,7 @@
         throw new Error(errorData.message || 'An unknown error occurred.');
       }
       
+      // On success, redirect back to the main character list
       window.location.href = './characters.html';
 
     } catch (error) {
@@ -221,14 +252,21 @@
   });
 
   // --- PAGE INITIALIZATION ---
+
+  /**
+   * Initializes the page by loading all necessary data in parallel and then checking for edit mode.
+   */
   async function init() {
+    // Wait for all data-loading promises to resolve before proceeding
     await Promise.all([
       loadFormOptions(),
       loadMissions()
     ]);
+    // After all options are loaded, check if we need to populate the form for editing
     await checkForEditMode();
   }
 
+  // Start the initialization process when the script loads
   init();
 </script>
 

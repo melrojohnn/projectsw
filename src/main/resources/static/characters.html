@@ -23,13 +23,17 @@
 
   <h1>Star Wars Characters</h1>
 
+  <!-- Main controls for the page, including search and create actions -->
   <div class="controls">
-    <form id="search-form">
+    <!-- Search form for filtering characters by name -->
+    <form id="search-form" onsubmit="return false;"> <!-- Prevent default form submission -->
       <input type="text" id="search-input" placeholder="Search by name...">
     </form>
+    <!-- Link to navigate to the character creation form -->
     <a href="./character-form.html" class="create-btn">+ Create New Character</a>
   </div>
 
+  <!-- Table to display the list of characters -->
   <table>
     <thead>
       <tr>
@@ -41,25 +45,37 @@
       </tr>
     </thead>
     <tbody id="characters-table-body">
-      <!-- Character rows will be injected here by JavaScript -->
+      <!-- Character rows will be dynamically injected here by JavaScript -->
     </tbody>
   </table>
 
 <script>
+  // --- CONFIGURATION ---
   const API_URL = "http://localhost:8181/character";
+
+  // --- DOM ELEMENTS ---
   const tableBody = document.getElementById("characters-table-body");
   const searchInput = document.getElementById("search-input");
-  let allCharacters = []; // Cache for the full list of characters
 
-  // Function to render the table with a given list of characters
+  // --- STATE CACHE ---
+  let allCharacters = []; // This array acts as a local cache for the full list of characters to make searching fast and client-side.
+
+  // --- FUNCTIONS ---
+
+  /**
+   * Renders a list of character objects into the HTML table.
+   * @param {Array} characters - The array of character objects to display.
+   */
   function renderTable(characters) {
-    tableBody.innerHTML = "";
+    tableBody.innerHTML = ""; // Clear the table before rendering
     if (characters.length === 0) {
       tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No characters found.</td></tr>';
       return;
     }
+
     characters.forEach(char => {
       const tr = document.createElement("tr");
+      // Each character name is a link to their detailed profile page, passing the UUID as a URL parameter.
       tr.innerHTML = `
         <td><img src="${char.imageUrl || 'https://via.placeholder.com/60'}" alt="Image of ${char.name}"/></td>
         <td><a href="./character-profile.html?id=${char.id}">${char.name}</a></td>
@@ -71,7 +87,10 @@
     });
   }
 
-  // Function to fetch all characters from the API
+  /**
+   * Fetches the complete list of characters from the API and stores it in the local cache.
+   * It then calls renderTable to display the initial list.
+   */
   async function loadCharacters() {
     try {
       const res = await fetch(`${API_URL}/all`);
@@ -84,7 +103,13 @@
     }
   }
 
-  // Event listener for the search input
+  // --- EVENT LISTENERS ---
+
+  /**
+   * Listens for input on the search bar.
+   * Filters the locally cached `allCharacters` array based on the search term and re-renders the table.
+   * This provides an instant search experience without making new API calls.
+   */
   searchInput.addEventListener("input", (e) => {
     const searchTerm = e.target.value.toLowerCase();
     const filteredCharacters = allCharacters.filter(char => 
@@ -93,7 +118,9 @@
     renderTable(filteredCharacters);
   });
 
-  // Initial load
+  /**
+   * The entry point for the script. Fires when the page's DOM is fully loaded.
+   */
   document.addEventListener("DOMContentLoaded", loadCharacters);
 </script>
 

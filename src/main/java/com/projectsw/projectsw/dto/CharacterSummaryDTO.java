@@ -8,15 +8,16 @@ import lombok.Setter;
 import java.util.UUID;
 
 /**
- * A simplified DTO representing a summary of a character.
- * Used to avoid circular dependencies in other DTOs.
+ * A simplified Data Transfer Object representing a summary of a character.
+ * This is typically used for nested representations, such as listing members within a mission,
+ * to provide essential information without causing circular serialization issues.
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CharacterSummaryDTO {
-    private UUID id; // The publicId
+    private UUID id; // The public UUID of the character.
     private String name;
     private String rank;
 }

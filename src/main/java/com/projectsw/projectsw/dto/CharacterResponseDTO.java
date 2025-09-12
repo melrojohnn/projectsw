@@ -7,13 +7,14 @@ import lombok.Setter;
 import java.util.UUID;
 
 /**
- * DTO for sending character data back to the client.
- * This controls what information is exposed in the API response.
+ * Data Transfer Object for sending detailed character data back to the client.
+ * This class defines the structure of a character as it is exposed through the API,
+ * including nested objects for related data like missions.
  */
 @Getter
 @Setter
 public class CharacterResponseDTO {
-    private UUID id; // This will be the publicId
+    private UUID id; // The public UUID of the character.
     private String name;
     private String email;
     private int age;
